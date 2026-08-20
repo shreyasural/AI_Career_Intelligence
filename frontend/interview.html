@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AI Mock Interview</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 700px;
+            margin: 50px auto;
+            padding: 20px;
+        }
+
+        button {
+            padding: 12px 20px;
+            margin: 5px;
+            cursor: pointer;
+        }
+
+        #status {
+            margin-top: 20px;
+            font-weight: bold;
+        }
+
+        #answer {
+            padding: 15px;
+            border: 1px solid #ccc;
+            min-height: 50px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>🎤 AI Mock Interview</h1>
+
+    <h3>Question:</h3>
+
+    <p id="question">
+        What is a REST API?
+    </p>
+
+    <button id="startBtn">
+        🎤 Start Answer
+    </button>
+
+    <button id="stopBtn">
+        ⏹ Stop
+    </button>
+
+    <p id="status">Status: Ready</p>
+
+    <h3>Your Answer:</h3>
+
+    <div id="answer">
+        Your spoken answer will appear here...
+    </div>
+<button id="submitBtn">
+    📤 Submit Answer
+</button>
+
+<div id="evaluation"></div>
+    <script>
+
+        const SpeechRecognition =
+            window.SpeechRecognition ||
+            window.webkitSpeechRecognition;
+
+        const startBtn = document.getElementById("startBtn");
+        const stopBtn = document.getElementById("stopBtn");
+        const answerBox = document.getElementById("answer");
+        const status = document.getElementById("status");
+
+        let recognition = null;
+
+        if (!SpeechRecognition) {
+
+            status.innerText =
+                "Speech recognition is not supported. Please use Google Chrome.";
+
+            startBtn.disabled = true;
+            stopBtn.disabled = true;
+
+        } else {
+
+            recognition = new SpeechRecognition();
+
+            recognition.lang = "en-US";
+
+            recognition.continuous = false;
+
+            recognition.interimResults = false;
+
+
+            recognition.onstart = function() {
+
+                status.innerText =
+                    "Status: 🎤 Listening... Speak now.";
+
+                startBtn.disabled = true;
+                stopBtn.disabled = false;
+            };
+
+
+            recognition.onresult = function(event) {
+
+                const transcript =
+                    event.results[0][0].transcript;
+
+                answerBox.innerText = transcript;
+
+                status.innerText =
+                    "Status: Answer recorded ✅";
+            };
+
+
+            recognition.onerror = function(event) {
+
+                console.log("Speech error:", event.error);
+
+                status.innerText =
+                    "Error: " + event.error;
+
+                startBtn.disabled = false;
+                stopBtn.disabled = true;
+            };
+
+
+            recognition.onend = function() {
+
+                startBtn.disabled = false;
+                stopBtn.disabled = true;
+
+                if (status.innerText.includes("Listening")) {
+                    status.innerText =
+                        "Status: Recording stopped.";
+                }
+            };
+
+
+            startBtn.onclick = function() {
+
+                answerBox.innerText = "";
+
+                status.innerText =
+                    "Status: Starting microphone...";
+
+                try {
+                    recognition.start();
+                } catch (error) {
+                    console.log(error);
+                }
+            };
+
+
+            stopBtn.onclick = function() {
+
+                recognition.stop();
+
+                status.innerText =
+                    "Status: Stopping...";
+            };
+        }
+const submitBtn = document.getElementById("submitBtn");
+const evaluationBox = document.getElementById("evaluation");
+
+submitBtn.onclick = async function () {
+
+    const answer = answerBox.innerText;
+
+    if (!answer || answer === "Your spoken answer will appear here...") {
+        alert("Please record your answer first.");
+        return;
+    }
+
+    evaluationBox.innerText = "Evaluating your answer...";
+
+    try {
+
+        const response = await fetch(
+            "http://127.0.0.1:8000/evaluate-answer",
+            {
+                method: "POST",
+
+                headers: {
+                    "Content-Type": "application/json"
+                },
+
+                body: JSON.stringify({
+                    user_id: 1,
+                    career: "Backend Developer",
+                    question: document.getElementById("question").innerText,
+                    answer: answer
+                })
+            }
+        );
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.detail || "Evaluation failed");
+        }
+
+        const evaluation = data.evaluation;
+
+        evaluationBox.innerHTML = `
+            <h3>📊 Evaluation</h3>
+
+            <p><strong>Score:</strong>
+                ${evaluation.score}/10
+            </p>
+
+            <p><strong>Feedback:</strong>
+                ${evaluation.feedback}
+            </p>
+
+            <p><strong>Strengths:</strong></p>
+            <ul>
+                ${evaluation.strengths
+                    .map(item => `<li>${item}</li>`)
+                    .join("")}
+            </ul>
+
+            <p><strong>Areas to Improve:</strong></p>
+            <ul>
+                ${evaluation.areas_to_improve
+                    .map(item => `<li>${item}</li>`)
+                    .join("")}
+            </ul>
+        `;
+
+    } catch (error) {
+
+        console.error(error);
+
+        evaluationBox.innerHTML =
+            "❌ Could not connect to the FastAPI server.";
+    }
+};
+    </script>
+
+</body>
+</html>

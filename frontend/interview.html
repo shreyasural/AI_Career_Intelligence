@@ -1,6 +1,10 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>AI Mock Interview</title>
 
     <style>
@@ -15,6 +19,25 @@
             padding: 12px 20px;
             margin: 5px;
             cursor: pointer;
+            border: none;
+            border-radius: 5px;
+            background: #333;
+            color: white;
+        }
+
+        button:disabled {
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        input {
+            padding: 10px;
+            width: 80px;
+        }
+
+        #career {
+            font-weight: bold;
+            color: #333;
         }
 
         #status {
@@ -22,11 +45,42 @@
             font-weight: bold;
         }
 
+        #question {
+            padding: 15px;
+            background: #f5f5f5;
+            border-radius: 5px;
+            min-height: 30px;
+        }
+
         #answer {
             padding: 15px;
             border: 1px solid #ccc;
             min-height: 50px;
             margin-top: 10px;
+            border-radius: 5px;
+        }
+
+        #evaluation {
+            margin-top: 25px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        #finalResult {
+            margin-top: 25px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        #nextBtn {
+            display: none;
+        }
+
+        #voiceStatus {
+            margin-top: 10px;
+            font-weight: bold;
         }
     </style>
 </head>
@@ -35,210 +89,1040 @@
 
     <h1>🎤 AI Mock Interview</h1>
 
-    <h3>Question:</h3>
+    <!-- USER ID -->
+    <label for="userIdInput">User ID:</label>
 
-    <p id="question">
-        What is a REST API?
+    <input
+        type="number"
+        id="userIdInput"
+        value="1"
+        min="1"
+    >
+
+    <button id="loadBtn">
+        🔄 Load Interview
+    </button>
+
+    <!-- CAREER -->
+    <p>
+        <strong>Career:</strong>
+        <span id="career">Loading...</span>
     </p>
+
+    <!-- QUESTION NUMBER -->
+    <h3>
+        Question
+        <span id="questionNumber">1</span>
+        of
+        <span id="totalQuestions">5</span>
+    </h3>
+
+    <!-- QUESTION -->
+    <p id="question">
+        Loading interview question...
+    </p>
+
+    <!-- SPEAK QUESTION -->
+    <button id="speakBtn">
+        🔊 Speak Question
+    </button>
+
+    <p id="voiceStatus"></p>
+
+    <!-- ANSWER BUTTONS -->
+    <br>
 
     <button id="startBtn">
         🎤 Start Answer
     </button>
 
-    <button id="stopBtn">
+    <button id="stopBtn" disabled>
         ⏹ Stop
     </button>
 
-    <p id="status">Status: Ready</p>
+    <!-- STATUS -->
+    <p id="status">
+        Status: Loading interview...
+    </p>
 
+    <!-- ANSWER -->
     <h3>Your Answer:</h3>
 
     <div id="answer">
         Your spoken answer will appear here...
     </div>
-<button id="submitBtn">
-    📤 Submit Answer
-</button>
 
-<div id="evaluation"></div>
+    <!-- SUBMIT -->
+    <button id="submitBtn">
+        📤 Submit Answer
+    </button>
+
+    <!-- NEXT -->
+    <button id="nextBtn">
+        ➡️ Next Question
+    </button>
+
+    <!-- EVALUATION -->
+    <div id="evaluation"></div>
+
+    <!-- FINAL RESULT -->
+    <div id="finalResult"></div>
+
+
     <script>
+
+        // ==================================================
+        // VARIABLES
+        // ==================================================
+
+        let userId = 1;
+
+        let career = "";
+
+        let questions = [];
+
+        let currentQuestionIndex = 0;
+
+        let scores = [];
+
+        let allStrengths = [];
+
+        let allImprovements = [];
+
+
+        // ==================================================
+        // HTML ELEMENTS
+        // ==================================================
+
+        const questionBox =
+            document.getElementById("question");
+
+        const careerBox =
+            document.getElementById("career");
+
+        const startBtn =
+            document.getElementById("startBtn");
+
+        const userIdInput =
+            document.getElementById("userIdInput");
+
+        const loadBtn =
+            document.getElementById("loadBtn");
+
+        const stopBtn =
+            document.getElementById("stopBtn");
+
+        const submitBtn =
+            document.getElementById("submitBtn");
+
+        const nextBtn =
+            document.getElementById("nextBtn");
+
+        const answerBox =
+            document.getElementById("answer");
+
+        const status =
+            document.getElementById("status");
+
+        const evaluationBox =
+            document.getElementById("evaluation");
+
+        const questionNumber =
+            document.getElementById("questionNumber");
+
+        const totalQuestions =
+            document.getElementById("totalQuestions");
+
+        const finalResult =
+            document.getElementById("finalResult");
+
+        const speakBtn =
+            document.getElementById("speakBtn");
+
+        const voiceStatus =
+            document.getElementById("voiceStatus");
+
+
+        // ==================================================
+        // LOAD INTERVIEW FROM FASTAPI
+        // ==================================================
+
+        async function loadInterview() {
+
+            userId = parseInt(userIdInput.value);
+
+            if (!userId) {
+
+                alert("Please enter a valid User ID.");
+
+                return;
+            }
+
+            try {
+
+                status.innerText =
+                    "⏳ Loading interview...";
+
+                const response = await fetch(
+                    "http://127.0.0.1:8000/mock-interview/" + userId
+                );
+
+                const data = await response.json();
+
+                console.log("Interview data:", data);
+
+
+                if (!response.ok) {
+
+                    throw new Error(
+                        data.detail ||
+                        "Could not load interview"
+                    );
+                }
+
+
+                if (
+                    !data.mock_interviews ||
+                    data.mock_interviews.length === 0
+                ) {
+
+                    throw new Error(
+                        "No interview questions found"
+                    );
+                }
+
+
+                // Get first recommended career
+
+                career =
+                    data.mock_interviews[0].career;
+
+
+                questions =
+                    data.mock_interviews[0].questions;
+
+
+                // Reset interview
+
+                currentQuestionIndex = 0;
+
+                scores = [];
+
+                allStrengths = [];
+
+                allImprovements = [];
+
+
+                // Display career
+
+                careerBox.innerText =
+                    career;
+
+
+                // Display total questions
+
+                totalQuestions.innerText =
+                    questions.length;
+
+
+                // Clear final result
+
+                finalResult.innerHTML = "";
+
+
+                // Show first question
+
+                showQuestion();
+
+
+                status.innerText =
+                    "Status: Ready";
+
+
+            } catch (error) {
+
+                console.error(
+                    "Load error:",
+                    error
+                );
+
+                careerBox.innerText =
+                    "Unable to load career";
+
+                questionBox.innerText =
+                    "Unable to load interview questions.";
+
+                status.innerText =
+                    "❌ Could not connect to FastAPI.";
+
+            }
+        }
+
+
+        // ==================================================
+        // SHOW CURRENT QUESTION
+        // ==================================================
+
+        function showQuestion() {
+
+            // Interview completed
+
+            if (
+                currentQuestionIndex >=
+                questions.length
+            ) {
+
+                questionBox.innerText =
+                    "🎉 Interview completed!";
+
+                answerBox.innerText =
+                    "All questions completed.";
+
+                startBtn.disabled = true;
+
+                stopBtn.disabled = true;
+
+                submitBtn.disabled = true;
+
+                speakBtn.disabled = true;
+
+                nextBtn.style.display = "none";
+
+                voiceStatus.innerText = "";
+
+                status.innerText =
+                    "Status: Interview completed ✅";
+
+                showFinalResult();
+
+                return;
+            }
+
+
+            // Display question
+
+            questionBox.innerText =
+                questions[currentQuestionIndex];
+
+
+            // Display question number
+
+            questionNumber.innerText =
+                currentQuestionIndex + 1;
+
+
+            totalQuestions.innerText =
+                questions.length;
+
+
+            // Reset answer
+
+            answerBox.innerText =
+                "Your spoken answer will appear here...";
+
+
+            // Clear evaluation
+
+            evaluationBox.innerHTML = "";
+
+
+            // Reset buttons
+
+            startBtn.disabled = false;
+
+            stopBtn.disabled = true;
+
+            submitBtn.disabled = false;
+
+            speakBtn.disabled = false;
+
+            nextBtn.style.display = "none";
+
+
+            // Reset voice status
+
+            voiceStatus.innerText = "";
+
+
+            // Stop any previous speech
+
+            if ("speechSynthesis" in window) {
+
+                window.speechSynthesis.cancel();
+            }
+        }
+
+
+        // ==================================================
+        // TEXT TO SPEECH
+        // ==================================================
+
+        function speakQuestion() {
+
+            const question =
+                questions[currentQuestionIndex];
+
+
+            if (!question) {
+
+                alert("No question available.");
+
+                return;
+            }
+
+
+            // Check browser support
+
+            if (!("speechSynthesis" in window)) {
+
+                voiceStatus.innerText =
+                    "❌ Text-to-speech is not supported in this browser.";
+
+                return;
+            }
+
+
+            // Stop previous speech
+
+            window.speechSynthesis.cancel();
+
+
+            // Create speech
+
+            const speech =
+                new SpeechSynthesisUtterance(question);
+
+
+            speech.lang = "en-US";
+
+            speech.rate = 0.9;
+
+            speech.pitch = 1;
+
+            speech.volume = 1;
+
+
+            // Find English voice
+
+            const voices =
+                window.speechSynthesis.getVoices();
+
+
+            const englishVoice =
+                voices.find(
+                    voice =>
+                        voice.lang.startsWith("en")
+                );
+
+
+            if (englishVoice) {
+
+                speech.voice =
+                    englishVoice;
+            }
+
+
+            // When speaking starts
+
+            speech.onstart = function () {
+
+                voiceStatus.innerText =
+                    "🔊 Speaking question...";
+
+                status.innerText =
+                    "Status: 🔊 Question is being spoken...";
+            };
+
+
+            // When speaking finishes
+
+            speech.onend = function () {
+
+                voiceStatus.innerText =
+                    "✅ Question spoken.";
+
+                status.innerText =
+                    "Status: Ready";
+            };
+
+
+            // If speech fails
+
+            speech.onerror = function (event) {
+
+                console.error(
+                    "Speech error:",
+                    event
+                );
+
+                voiceStatus.innerText =
+                    "❌ Could not speak the question.";
+
+                status.innerText =
+                    "Status: Voice error";
+            };
+
+
+            // Speak
+
+            window.speechSynthesis.speak(speech);
+        }
+
+
+        // Speak button
+
+        speakBtn.onclick = function () {
+
+            speakQuestion();
+
+        };
+
+
+        // ==================================================
+        // SPEECH RECOGNITION
+        // ==================================================
 
         const SpeechRecognition =
             window.SpeechRecognition ||
             window.webkitSpeechRecognition;
 
-        const startBtn = document.getElementById("startBtn");
-        const stopBtn = document.getElementById("stopBtn");
-        const answerBox = document.getElementById("answer");
-        const status = document.getElementById("status");
 
         let recognition = null;
+
 
         if (!SpeechRecognition) {
 
             status.innerText =
-                "Speech recognition is not supported. Please use Google Chrome.";
+                "❌ Speech recognition is not supported. Please use Google Chrome.";
 
             startBtn.disabled = true;
+
             stopBtn.disabled = true;
 
         } else {
 
-            recognition = new SpeechRecognition();
-
-            recognition.lang = "en-US";
-
-            recognition.continuous = false;
-
-            recognition.interimResults = false;
+            recognition =
+                new SpeechRecognition();
 
 
-            recognition.onstart = function() {
-
-                status.innerText =
-                    "Status: 🎤 Listening... Speak now.";
-
-                startBtn.disabled = true;
-                stopBtn.disabled = false;
-            };
+            recognition.lang =
+                "en-US";
 
 
-            recognition.onresult = function(event) {
-
-                const transcript =
-                    event.results[0][0].transcript;
-
-                answerBox.innerText = transcript;
-
-                status.innerText =
-                    "Status: Answer recorded ✅";
-            };
+            recognition.continuous =
+                false;
 
 
-            recognition.onerror = function(event) {
-
-                console.log("Speech error:", event.error);
-
-                status.innerText =
-                    "Error: " + event.error;
-
-                startBtn.disabled = false;
-                stopBtn.disabled = true;
-            };
+            recognition.interimResults =
+                false;
 
 
-            recognition.onend = function() {
+            // ------------------------------------------
+            // START LISTENING
+            // ------------------------------------------
 
-                startBtn.disabled = false;
-                stopBtn.disabled = true;
+            recognition.onstart =
+                function () {
 
-                if (status.innerText.includes("Listening")) {
                     status.innerText =
-                        "Status: Recording stopped.";
+                        "Status: 🎤 Listening... Speak now.";
+
+                    startBtn.disabled =
+                        true;
+
+                    stopBtn.disabled =
+                        false;
+                };
+
+
+            // ------------------------------------------
+            // GET ANSWER
+            // ------------------------------------------
+
+            recognition.onresult =
+                function (event) {
+
+                    const transcript =
+                        event.results[0][0].transcript;
+
+
+                    answerBox.innerText =
+                        transcript;
+
+
+                    status.innerText =
+                        "Status: Answer recorded ✅";
+                };
+
+
+            // ------------------------------------------
+            // ERROR
+            // ------------------------------------------
+
+            recognition.onerror =
+                function (event) {
+
+                    console.error(
+                        "Speech recognition error:",
+                        event.error
+                    );
+
+
+                    status.innerText =
+                        "❌ Speech error: " +
+                        event.error;
+
+
+                    startBtn.disabled =
+                        false;
+
+                    stopBtn.disabled =
+                        true;
+                };
+
+
+            // ------------------------------------------
+            // END
+            // ------------------------------------------
+
+            recognition.onend =
+                function () {
+
+                    startBtn.disabled =
+                        false;
+
+                    stopBtn.disabled =
+                        true;
+                };
+
+
+            // ------------------------------------------
+            // START BUTTON
+            // ------------------------------------------
+
+            startBtn.onclick =
+                function () {
+
+                    answerBox.innerText = "";
+
+                    evaluationBox.innerHTML = "";
+
+                    status.innerText =
+                        "Status: Starting microphone...";
+
+
+                    try {
+
+                        recognition.start();
+
+                    } catch (error) {
+
+                        console.error(error);
+                    }
+                };
+
+
+            // ------------------------------------------
+            // STOP BUTTON
+            // ------------------------------------------
+
+            stopBtn.onclick =
+                function () {
+
+                    recognition.stop();
+
+                    status.innerText =
+                        "Status: Stopping...";
+                };
+        }
+
+
+        // ==================================================
+        // SUBMIT ANSWER
+        // ==================================================
+
+        submitBtn.onclick =
+            async function () {
+
+                const answer =
+                    answerBox.innerText.trim();
+
+
+                if (
+                    !answer ||
+                    answer ===
+                    "Your spoken answer will appear here..."
+                ) {
+
+                    alert(
+                        "Please record your answer first."
+                    );
+
+                    return;
                 }
-            };
 
 
-            startBtn.onclick = function() {
+                evaluationBox.innerHTML =
+                    "⏳ Evaluating your answer...";
 
-                answerBox.innerText = "";
-
-                status.innerText =
-                    "Status: Starting microphone...";
 
                 try {
-                    recognition.start();
+
+                    const response =
+                        await fetch(
+                            "http://127.0.0.1:8000/evaluate-answer",
+                            {
+                                method: "POST",
+
+                                headers: {
+                                    "Content-Type":
+                                        "application/json"
+                                },
+
+                                body:
+                                    JSON.stringify({
+
+                                        user_id:
+                                            userId,
+
+                                        career:
+                                            career,
+
+                                        question:
+                                            questions[
+                                                currentQuestionIndex
+                                            ],
+
+                                        answer:
+                                            answer
+                                    })
+                            }
+                        );
+
+
+                    const data =
+                        await response.json();
+
+
+                    if (!response.ok) {
+
+                        throw new Error(
+                            data.detail ||
+                            "Evaluation failed"
+                        );
+                    }
+
+
+                    const evaluation =
+                        data.evaluation;
+
+
+                    // Save score
+
+                    scores.push(
+                        evaluation.score
+                    );
+
+
+                    // Save strengths
+
+                    if (
+                        evaluation.strengths
+                    ) {
+
+                        allStrengths.push(
+                            ...evaluation.strengths
+                        );
+                    }
+
+
+                    // Save improvements
+
+                    if (
+                        evaluation.areas_to_improve
+                    ) {
+
+                        allImprovements.push(
+                            ...evaluation.areas_to_improve
+                        );
+                    }
+
+
+                    // Display evaluation
+
+                    evaluationBox.innerHTML = `
+
+                        <h3>📊 Evaluation</h3>
+
+                        <p>
+                            <strong>Score:</strong>
+                            ${evaluation.score}/10
+                        </p>
+
+                        <p>
+                            <strong>Feedback:</strong>
+                            ${evaluation.feedback}
+                        </p>
+
+                        <p>
+                            <strong>Strengths:</strong>
+                        </p>
+
+                        <ul>
+                            ${
+                                (evaluation.strengths || [])
+                                    .map(
+                                        item =>
+                                            `<li>${item}</li>`
+                                    )
+                                    .join("")
+                            }
+                        </ul>
+
+                        <p>
+                            <strong>
+                                Areas to Improve:
+                            </strong>
+                        </p>
+
+                        <ul>
+                            ${
+                                (evaluation.areas_to_improve || [])
+                                    .map(
+                                        item =>
+                                            `<li>${item}</li>`
+                                    )
+                                    .join("")
+                            }
+                        </ul>
+                    `;
+
+
+                    // Show next button
+
+                    nextBtn.style.display =
+                        "inline-block";
+
+
+                    // Disable submit
+
+                    submitBtn.disabled =
+                        true;
+
+
                 } catch (error) {
-                    console.log(error);
+
+                    console.error(
+                        "Evaluation error:",
+                        error
+                    );
+
+
+                    evaluationBox.innerHTML =
+                        "❌ Could not connect to the FastAPI server.";
                 }
             };
 
 
-            stopBtn.onclick = function() {
+        // ==================================================
+        // NEXT QUESTION
+        // ==================================================
 
-                recognition.stop();
+        nextBtn.onclick =
+            function () {
 
-                status.innerText =
-                    "Status: Stopping...";
+                currentQuestionIndex++;
+
+                submitBtn.disabled =
+                    false;
+
+                showQuestion();
             };
-        }
-const submitBtn = document.getElementById("submitBtn");
-const evaluationBox = document.getElementById("evaluation");
 
-submitBtn.onclick = async function () {
 
-    const answer = answerBox.innerText;
+        // ==================================================
+        // FINAL RESULT
+        // ==================================================
 
-    if (!answer || answer === "Your spoken answer will appear here...") {
-        alert("Please record your answer first.");
-        return;
-    }
+        function showFinalResult() {
 
-    evaluationBox.innerText = "Evaluating your answer...";
+            if (scores.length === 0) {
 
-    try {
-
-        const response = await fetch(
-            "http://127.0.0.1:8000/evaluate-answer",
-            {
-                method: "POST",
-
-                headers: {
-                    "Content-Type": "application/json"
-                },
-
-                body: JSON.stringify({
-                    user_id: 1,
-                    career: "Backend Developer",
-                    question: document.getElementById("question").innerText,
-                    answer: answer
-                })
+                return;
             }
-        );
 
-        const data = await response.json();
 
-        if (!response.ok) {
-            throw new Error(data.detail || "Evaluation failed");
+            const totalScore =
+                scores.reduce(
+                    (sum, score) =>
+                        sum + score,
+                    0
+                );
+
+
+            const averageScore =
+                totalScore /
+                scores.length;
+
+
+            const uniqueStrengths =
+                [
+                    ...new Set(
+                        allStrengths
+                    )
+                ];
+
+
+            const uniqueImprovements =
+                [
+                    ...new Set(
+                        allImprovements
+                    )
+                ];
+
+
+            finalResult.innerHTML = `
+
+                <h2>
+                    🎉 Interview Completed!
+                </h2>
+
+                <h3>
+                    📊 Overall Performance
+                </h3>
+
+                <p>
+                    <strong>Career:</strong>
+                    ${career}
+                </p>
+
+                <p>
+                    <strong>
+                        Questions Answered:
+                    </strong>
+                    ${scores.length}/${questions.length}
+                </p>
+
+                <p>
+                    <strong>
+                        Average Score:
+                    </strong>
+                    ${averageScore.toFixed(1)}/10
+                </p>
+
+                <h3>
+                    💪 Overall Strengths
+                </h3>
+
+                <ul>
+                    ${
+                        uniqueStrengths
+                            .map(
+                                item =>
+                                    `<li>${item}</li>`
+                            )
+                            .join("")
+                    }
+                </ul>
+
+                <h3>
+                    📈 Areas to Improve
+                </h3>
+
+                <ul>
+                    ${
+                        uniqueImprovements
+                            .map(
+                                item =>
+                                    `<li>${item}</li>`
+                            )
+                            .join("")
+                    }
+                </ul>
+            `;
         }
 
-        const evaluation = data.evaluation;
 
-        evaluationBox.innerHTML = `
-            <h3>📊 Evaluation</h3>
+        // ==================================================
+        // LOAD BUTTON
+        // ==================================================
 
-            <p><strong>Score:</strong>
-                ${evaluation.score}/10
-            </p>
+        loadBtn.onclick =
+            function () {
 
-            <p><strong>Feedback:</strong>
-                ${evaluation.feedback}
-            </p>
+                userId =
+                    parseInt(
+                        userIdInput.value
+                    );
 
-            <p><strong>Strengths:</strong></p>
-            <ul>
-                ${evaluation.strengths
-                    .map(item => `<li>${item}</li>`)
-                    .join("")}
-            </ul>
 
-            <p><strong>Areas to Improve:</strong></p>
-            <ul>
-                ${evaluation.areas_to_improve
-                    .map(item => `<li>${item}</li>`)
-                    .join("")}
-            </ul>
-        `;
+                if (!userId) {
 
-    } catch (error) {
+                    alert(
+                        "Please enter a valid User ID."
+                    );
 
-        console.error(error);
+                    return;
+                }
 
-        evaluationBox.innerHTML =
-            "❌ Could not connect to the FastAPI server.";
-    }
-};
+
+                localStorage.setItem(
+                    "user_id",
+                    userId
+                );
+
+
+                loadInterview();
+            };
+
+
+        // ==================================================
+        // LOAD SAVED USER
+        // ==================================================
+
+        const savedUserId =
+            localStorage.getItem(
+                "user_id"
+            );
+
+
+        if (savedUserId) {
+
+            userId =
+                parseInt(
+                    savedUserId
+                );
+
+            userIdInput.value =
+                userId;
+        }
+
+
+        // ==================================================
+        // LOAD INTERVIEW WHEN PAGE OPENS
+        // ==================================================
+
+        loadInterview();
+
+
+        // ==================================================
+        // LOAD BROWSER VOICES
+        // ==================================================
+
+        if ("speechSynthesis" in window) {
+
+            window.speechSynthesis.onvoiceschanged =
+                function () {
+
+                    console.log(
+                        "Browser voices loaded:",
+                        window.speechSynthesis.getVoices()
+                    );
+                };
+        }
+
     </script>
 
 </body>
+
 </html>

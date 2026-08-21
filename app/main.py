@@ -1,4 +1,5 @@
 from fastapi import FastAPI, Depends
+from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 
 from app.database import engine, Base, SessionLocal
@@ -9,11 +10,26 @@ from app.schemas import (
     CareerProfileCreate,
     CareerProfileResponse
 )
-
+from fastapi.responses import FileResponse
+from app.voice import text_to_speech
+from app.schemas import (
+    UserCreate,
+    UserResponse,
+    CareerProfileCreate,
+    CareerProfileResponse,
+    InterviewAnswerRequest
+)
+from app.career_engine import recommend_career, analyze_skill_gap, learning_roadmap, get_interview_questions, evaluate_interview_answer
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
-
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 def get_db():
     db = SessionLocal()
@@ -59,12 +75,20 @@ def create_career_profile(
     profile: CareerProfileCreate,
     db: Session = Depends(get_db)
 ):
+    recommendations = recommend_career(
+        profile.skills,
+        profile.interests
+    )
+
+    recommended_career = recommendations[0] if recommendations else None
+
     new_profile = models.CareerProfile(
         user_id=profile.user_id,
         skills=profile.skills,
         education=profile.education,
         experience=profile.experience,
-        interests=profile.interests
+        interests=profile.interests,
+        recommended_career=recommended_career
     )
 
     db.add(new_profile)
@@ -72,3 +96,192 @@ def create_career_profile(
     db.refresh(new_profile)
 
     return new_profile
+
+@app.get("/career-profiles", response_model=list[CareerProfileResponse])
+def get_career_profiles(db: Session = Depends(get_db)):
+    return db.query(models.CareerProfile).all()
+@app.get("/career-profile/{user_id}")
+def get_user_career_profile(
+    user_id: int,
+    db: Session = Depends(get_db)
+):
+    profile = db.query(models.CareerProfile).filter(
+        models.CareerProfile.user_id == user_id
+    ).first()
+
+    if not profile:
+        return {"message": "Career profile not found"}
+
+    return {
+        "user_id": profile.user_id,
+        "skills": profile.skills,
+        "education": profile.education,
+        "experience": profile.experience,
+        "interests": profile.interests,
+        "recommended_career": profile.recommended_career
+    }
+@app.get("/career-recommendation/{user_id}")
+def career_recommendation(
+    user_id: int,
+    db: Session = Depends(get_db)
+):
+    profile = db.query(models.CareerProfile).filter(
+        models.CareerProfile.user_id == user_id
+    ).first()
+
+    if not profile:
+        return {"error": "Career profile not found"}
+
+    recommendations = recommend_career(
+        profile.skills,
+        profile.interests
+    )
+
+    if not recommendations:
+        return {"error": "No career recommendations found"}
+
+    # Save the first recommendation in the database
+    profile.recommended_career = recommendations[0]
+
+    db.commit()
+    db.refresh(profile)
+
+    return {
+        "user_id": user_id,
+        "recommendations": recommendations,
+        "recommended_career": profile.recommended_career
+    }
+@app.get("/skill-gap/{user_id}")
+def skill_gap(user_id: int, db: Session = Depends(get_db)):
+
+    profile = db.query(models.CareerProfile).filter(
+        models.CareerProfile.user_id == user_id
+    ).first()
+
+    if not profile:
+        return {"error": "Career profile not found"}
+
+    recommendations = recommend_career(
+        profile.skills,
+        profile.interests
+    )
+
+    result = []
+
+    for career in recommendations:
+        gap = analyze_skill_gap(
+            profile.skills,
+            career
+        )
+
+        result.append(gap)
+
+    return {
+        "user_id": user_id,
+        "skill_gap_analysis": result
+    }
+@app.get("/learning-roadmap/{user_id}")
+def get_learning_roadmap(
+    user_id: int,
+    db: Session = Depends(get_db)
+):
+
+    profile = db.query(models.CareerProfile).filter(
+        models.CareerProfile.user_id == user_id
+    ).first()
+
+    if not profile:
+        return {"error": "Career profile not found"}
+
+    recommendations = recommend_career(
+        profile.skills,
+        profile.interests
+    )
+
+    roadmap_result = []
+
+    for career in recommendations:
+
+        gap = analyze_skill_gap(
+            profile.skills,
+            career
+        )
+
+        roadmap = learning_roadmap(
+            gap["missing_skills"]
+        )
+
+        roadmap_result.append({
+            "career": career,
+            "missing_skills": gap["missing_skills"],
+            "learning_roadmap": roadmap
+        })
+
+    return {
+        "user_id": user_id,
+        "roadmaps": roadmap_result
+    }
+@app.get("/mock-interview/{user_id}")
+def mock_interview(
+    user_id: int,
+    db: Session = Depends(get_db)
+):
+
+    profile = db.query(models.CareerProfile).filter(
+        models.CareerProfile.user_id == user_id
+    ).first()
+
+    if not profile:
+        return {"error": "Career profile not found"}
+
+    recommendations = recommend_career(
+        profile.skills,
+        profile.interests
+    )
+
+    interviews = []
+
+    for career in recommendations:
+
+        questions = get_interview_questions(career)
+
+        interviews.append({
+            "career": career,
+            "questions": questions
+        })
+
+    return {
+        "user_id": user_id,
+        "mock_interviews": interviews
+    }
+
+@app.post("/evaluate-answer")
+def evaluate_answer(
+    answer_data: InterviewAnswerRequest
+):
+
+    result = evaluate_interview_answer(
+        answer_data.question,
+        answer_data.answer,
+        answer_data.career
+    )
+
+    return {
+        "user_id": answer_data.user_id,
+        "career": answer_data.career,
+        "question": answer_data.question,
+        "answer": answer_data.answer,
+        "evaluation": result
+    }
+@app.get("/voice-question")
+def voice_question(question: str):
+
+    filename = text_to_speech(question)
+
+    return FileResponse(
+        path=filename,
+        media_type="audio/mpeg",
+        headers={
+            "Accept-Ranges": "bytes"
+        }
+    )

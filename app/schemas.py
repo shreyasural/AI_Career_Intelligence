@@ -33,3 +33,11 @@ class CareerProfileResponse(BaseModel):
 
     class Config:
         from_attributes = True
+        from pydantic import BaseModel
+
+
+class InterviewAnswerRequest(BaseModel):
+    user_id: int
+    career: str
+    question: str
+    answer: str

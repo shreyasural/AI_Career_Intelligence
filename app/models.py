@@ -19,3 +19,4 @@ class CareerProfile(Base):
     education = Column(String)
     experience = Column(Text)
     interests = Column(Text)
+    recommended_career = Column(String)

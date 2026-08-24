@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Text
+from sqlalchemy import Column, Integer, String, Text, Float
 from app.database import Base
 
 
@@ -20,3 +20,14 @@ class CareerProfile(Base):
     experience = Column(Text)
     interests = Column(Text)
     recommended_career = Column(String)
+class InterviewResult(Base):
+    __tablename__ = "interview_results"
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, nullable=False)
+    career = Column(String, nullable=False)
+    average_score = Column(Float, nullable=False)
+    questions_answered = Column(Integer, nullable=False)
+    face_warnings = Column(Integer, default=0)
+    strengths = Column(Text)
+    improvements = Column(Text)

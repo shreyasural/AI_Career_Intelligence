@@ -17,20 +17,28 @@ from app.schemas import (
     UserResponse,
     CareerProfileCreate,
     CareerProfileResponse,
-    InterviewAnswerRequest
+    InterviewAnswerRequest,
+    InterviewResultCreate
 )
+from fastapi import UploadFile, File
+import cv2
+import numpy as np
+from app.face_detection import detect_face
 from app.career_engine import recommend_career, analyze_skill_gap, learning_roadmap, get_interview_questions, evaluate_interview_answer
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
+    allow_origins=[
+        "http://127.0.0.1:5500",
+        "http://localhost:5500"
+    ],
+    allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
 def get_db():
     db = SessionLocal()
     try:
@@ -285,3 +293,38 @@ def voice_question(question: str):
             "Accept-Ranges": "bytes"
         }
     )
+@app.post("/detect-face")
+async def detect_face_api(file: UploadFile = File(...)):
+    contents = await file.read()
+
+    nparr = np.frombuffer(contents, np.uint8)
+    frame = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+
+    face_detected = detect_face(frame)
+
+    return {
+        "face_detected": face_detected
+    }
+@app.post("/interview-results")
+def save_interview_result(
+    result_data: InterviewResultCreate,
+    db: Session = Depends(get_db)
+):
+    result = models.InterviewResult(
+        user_id=result_data.user_id,
+        career=result_data.career,
+        average_score=result_data.average_score,
+        questions_answered=result_data.questions_answered,
+        face_warnings=result_data.face_warnings,
+        strengths=result_data.strengths,
+        improvements=result_data.improvements
+    )
+
+    db.add(result)
+    db.commit()
+    db.refresh(result)
+
+    return {
+        "message": "Interview result saved successfully",
+        "result_id": result.id
+    }

@@ -102,7 +102,18 @@
     <button id="loadBtn">
         🔄 Load Interview
     </button>
+<h2>Face Detection</h2>
 
+<video id="camera" width="400" height="300" autoplay></video>
+
+<p id="faceStatus">Camera not started</p>
+<p id="monitorStatus">Interview monitoring: OFF</p>
+<p id="faceWarning"></p>
+<p>Face warnings: <span id="warningCount">0</span></p>
+<button onclick="startInterview()">🎤 Start Interview</button>
+<button onclick="startCamera()">Start Camera</button>
+<button onclick="checkFace()">Detect Face</button>
+<button onclick="stopInterview()">Stop Interview</button>
     <!-- CAREER -->
     <p>
         <strong>Career:</strong>
@@ -189,7 +200,7 @@
 
         let allImprovements = [];
 
-
+        let faceWarnings = 0;
         // ==================================================
         // HTML ELEMENTS
         // ==================================================
@@ -312,7 +323,11 @@
 
                 allImprovements = [];
 
+                faceWarnings = 0;
 
+document.getElementById("warningCount").innerText = "0";
+
+document.getElementById("faceWarning").innerText = "";
                 // Display career
 
                 careerBox.innerText =
@@ -337,7 +352,9 @@
 
                 status.innerText =
                     "Status: Ready";
-
+                interviewMonitoring = true;
+document.getElementById("monitorStatus").innerText =
+    "Interview monitoring: ON";
 
             } catch (error) {
 
@@ -357,7 +374,7 @@
 
             }
         }
-
+        
 
         // ==================================================
         // SHOW CURRENT QUESTION
@@ -928,16 +945,43 @@
         // NEXT QUESTION
         // ==================================================
 
-        nextBtn.onclick =
-            function () {
+       nextBtn.onclick = function () {
 
-                currentQuestionIndex++;
+    currentQuestionIndex++;
 
-                submitBtn.disabled =
-                    false;
+    submitBtn.disabled = false;
 
-                showQuestion();
-            };
+    // Check if interview is finished
+    if (currentQuestionIndex >= questions.length) {
+
+        showFinalResult();
+
+        interviewMonitoring = false;
+
+        document.getElementById("monitorStatus").innerText =
+            "Interview monitoring: OFF";
+
+        if (camera.srcObject) {
+
+            const tracks =
+                camera.srcObject.getTracks();
+
+            tracks.forEach(track => track.stop());
+
+            camera.srcObject = null;
+        }
+
+        faceStatus.innerText =
+            "Interview completed";
+
+        status.innerText =
+            "🎉 Interview Completed";
+
+        return;
+    }
+
+    showQuestion();
+};
 
 
         // ==================================================
@@ -980,7 +1024,10 @@
                     )
                 ];
 
-
+            const monitoringResult =
+    faceWarnings === 0
+        ? "Excellent — face was visible throughout the interview."
+        : `Face monitoring recorded ${faceWarnings} warning(s).`;
             finalResult.innerHTML = `
 
                 <h2>
@@ -1009,7 +1056,19 @@
                     </strong>
                     ${averageScore.toFixed(1)}/10
                 </p>
+                <p>
+    <strong>
+        🎥 Face Monitoring:
+    </strong>
+    ${monitoringResult}
+</p>
 
+<p>
+    <strong>
+        ⚠️ Face Warnings:
+    </strong>
+    ${faceWarnings}
+</p>
                 <h3>
                     💪 Overall Strengths
                 </h3>
@@ -1120,7 +1179,119 @@
                     );
                 };
         }
+const camera = document.getElementById("camera");
+const faceStatus = document.getElementById("faceStatus");
 
+async function startCamera() {
+    try {
+        const stream = await navigator.mediaDevices.getUserMedia({
+            video: true
+        });
+
+        camera.srcObject = stream;
+
+        faceStatus.innerText = "Camera started";
+
+        interviewMonitoring = true;
+
+        document.getElementById("monitorStatus").innerText =
+            "Interview monitoring: ON";
+
+    } catch (error) {
+        console.error(error);
+
+        faceStatus.innerText =
+            "Could not access camera";
+
+        interviewMonitoring = false;
+
+        document.getElementById("monitorStatus").innerText =
+            "Interview monitoring: OFF";
+    }
+}
+async function checkFace() {
+    if (!camera.srcObject) {
+        faceStatus.innerText = "Start the camera first";
+        return;
+    }
+
+    const canvas = document.createElement("canvas");
+    canvas.width = camera.videoWidth;
+    canvas.height = camera.videoHeight;
+
+    const context = canvas.getContext("2d");
+    context.drawImage(camera, 0, 0, canvas.width, canvas.height);
+
+    canvas.toBlob(async (blob) => {
+        const formData = new FormData();
+        formData.append("file", blob, "camera.jpg");
+
+        try {
+            const response = await fetch("http://127.0.0.1:8000/detect-face", {
+                method: "POST",
+                body: formData
+            });
+
+            const result = await response.json();
+
+            if (result.face_detected) {
+    faceStatus.innerText = "✅ Face detected";
+
+    document.getElementById("faceWarning").innerText = "";
+} else {
+    faceStatus.innerText = "❌ No face detected";
+
+    faceWarnings++;
+
+    document.getElementById("warningCount").innerText =
+        faceWarnings;
+
+    document.getElementById("faceWarning").innerText =
+        "⚠️ Warning: Please keep your face visible during the interview.";
+}
+
+        } catch (error) {
+            console.error(error);
+            faceStatus.innerText = "Face detection failed";
+        }
+    }, "image/jpeg");
+}
+let interviewMonitoring = false;
+
+setInterval(() => {
+    if (camera.srcObject && interviewMonitoring) {
+        checkFace();
+    }
+}, 5000);
+function stopInterview() {
+    interviewMonitoring = false;
+
+    document.getElementById("monitorStatus").innerText =
+        "Interview monitoring: OFF";
+
+    if (camera.srcObject) {
+        const tracks = camera.srcObject.getTracks();
+
+        tracks.forEach(track => track.stop());
+
+        camera.srcObject = null;
+    }
+
+    faceStatus.innerText = "Camera stopped";
+}
+function startInterview() {
+    // Start camera
+    startCamera();
+
+    // Start interview monitoring
+    interviewMonitoring = true;
+
+    document.getElementById("monitorStatus").innerText =
+        "Interview monitoring: ON";
+
+    // Load interview questions
+    loadInterview();
+}
     </script>
 
 </body>

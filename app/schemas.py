@@ -41,3 +41,11 @@ class InterviewAnswerRequest(BaseModel):
     career: str
     question: str
     answer: str
+class InterviewResultCreate(BaseModel):
+    user_id: int
+    career: str
+    average_score: float
+    questions_answered: int
+    face_warnings: int = 0
+    strengths: str = ""
+    improvements: str = ""

@@ -328,3 +328,15 @@ def save_interview_result(
         "message": "Interview result saved successfully",
         "result_id": result.id
     }
+@app.get("/interview-results/{user_id}")
+def get_interview_results(
+    user_id: int,
+    db: Session = Depends(get_db)
+):
+    results = (
+        db.query(models.InterviewResult)
+        .filter(models.InterviewResult.user_id == user_id)
+        .all()
+    )
+
+    return results

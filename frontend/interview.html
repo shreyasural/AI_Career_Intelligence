@@ -82,6 +82,21 @@
             margin-top: 10px;
             font-weight: bold;
         }
+        .history-card {
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 15px;
+    margin: 15px 0;
+    background: #f8f9fa;
+}
+
+.history-card h3 {
+    margin-top: 0;
+}
+
+.history-card p {
+    margin: 8px 0;
+}
     </style>
 </head>
 
@@ -179,6 +194,13 @@
     <!-- FINAL RESULT -->
     <div id="finalResult"></div>
 
+    <h2>📚 Interview History</h2>
+
+<button onclick="loadInterviewHistory()">
+    View Interview History
+</button>
+
+<div id="interviewHistory"></div>
 
     <script>
 
@@ -1007,8 +1029,6 @@ document.getElementById("monitorStatus").innerText =
             const averageScore =
                 totalScore /
                 scores.length;
-
-
             const uniqueStrengths =
                 [
                     ...new Set(
@@ -1023,7 +1043,11 @@ document.getElementById("monitorStatus").innerText =
                         allImprovements
                     )
                 ];
-
+    saveInterviewResult(
+    averageScore,
+    uniqueStrengths,
+    uniqueImprovements
+);
             const monitoringResult =
     faceWarnings === 0
         ? "Excellent — face was visible throughout the interview."
@@ -1209,6 +1233,52 @@ async function startCamera() {
             "Interview monitoring: OFF";
     }
 }
+async function saveInterviewResult(
+    averageScore,
+    strengths,
+    improvements
+) {
+    try {
+        const response = await fetch(
+            "http://127.0.0.1:8000/interview-results",
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    user_id: userId,
+                    career: career,
+                    average_score: averageScore,
+                    questions_answered: scores.length,
+                    face_warnings: faceWarnings,
+                    strengths: strengths.join(", "),
+                    improvements: improvements.join(", ")
+                })
+            }
+        );
+
+        const data = await response.json();
+
+        if (response.ok) {
+            console.log(
+                "Interview result saved:",
+                data
+            );
+        } else {
+            console.error(
+                "Could not save result:",
+                data
+            );
+        }
+
+    } catch (error) {
+        console.error(
+            "Save result error:",
+            error
+        );
+    }
+}
 async function checkFace() {
     if (!camera.srcObject) {
         faceStatus.innerText = "Start the camera first";
@@ -1291,6 +1361,78 @@ function startInterview() {
 
     // Load interview questions
     loadInterview();
+}
+async function loadInterviewHistory() {
+    const historyBox =
+        document.getElementById("interviewHistory");
+
+    if (!userId) {
+        historyBox.innerText =
+            "Please enter a valid User ID.";
+        return;
+    }
+
+    try {
+        const response = await fetch(
+            `http://127.0.0.1:8000/interview-results/${userId}`
+        );
+
+        const results = await response.json();
+
+        if (!response.ok) {
+            throw new Error(
+                "Could not load interview history"
+            );
+        }
+
+        if (results.length === 0) {
+            historyBox.innerHTML =
+                "<p>No interview history found.</p>";
+            return;
+        }
+
+        historyBox.innerHTML = results.map(result => `
+            <div class="history-card">
+
+                <h3>${result.career}</h3>
+
+                <p>
+                    <strong>Score:</strong>
+                    ${result.average_score.toFixed(1)}/10
+                </p>
+
+                <p>
+                    <strong>Questions:</strong>
+                    ${result.questions_answered}
+                </p>
+
+                <p>
+                    <strong>Face Warnings:</strong>
+                    ${result.face_warnings}
+                </p>
+
+                <p>
+                    <strong>Strengths:</strong>
+                    ${result.strengths || "None"}
+                </p>
+
+                <p>
+                    <strong>Improvements:</strong>
+                    ${result.improvements || "None"}
+                </p>
+
+            </div>
+        `).join("");
+
+    } catch (error) {
+        console.error(
+            "History error:",
+            error
+        );
+
+        historyBox.innerText =
+            "Could not load interview history.";
+    }
 }
     </script>
 

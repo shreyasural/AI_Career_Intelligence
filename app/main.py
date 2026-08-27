@@ -1,7 +1,11 @@
 from fastapi import FastAPI, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
-
+from reportlab.pdfgen import canvas
+from reportlab.lib import colors
+from reportlab.lib.colors import HexColor
+from reportlab.pdfbase.pdfmetrics import stringWidth
+from datetime import datetime
 from app.database import engine, Base, SessionLocal
 from app import models
 from app.schemas import (
@@ -11,6 +15,9 @@ from app.schemas import (
     CareerProfileResponse
 )
 from fastapi.responses import FileResponse
+from reportlab.lib.pagesizes import A4
+from reportlab.pdfgen import canvas
+import os
 from app.voice import text_to_speech
 from app.schemas import (
     UserCreate,
@@ -340,3 +347,831 @@ def get_interview_results(
     )
 
     return results
+@app.get("/download-report/{user_id}")
+@app.get("/download-report/{user_id}")
+def download_report(user_id: int, db: Session = Depends(get_db)):
+
+    results = (
+        db.query(models.InterviewResult)
+        .filter(models.InterviewResult.user_id == user_id)
+        .order_by(models.InterviewResult.id.desc())
+        .all()
+    )
+
+    if not results:
+        raise HTTPException(
+            status_code=404,
+            detail="No interview results found"
+        )
+
+    result = results[0]
+
+    file_name = f"AI_Interview_Report_{user_id}.pdf"
+
+    file_path = os.path.join(
+        os.getcwd(),
+        file_name
+    )
+
+    pdf = canvas.Canvas(
+        file_path,
+        pagesize=A4
+    )
+
+    width, height = A4
+
+    # --------------------------------------------------
+    # COLORS
+    # --------------------------------------------------
+
+    dark = HexColor("#172033")
+    accent = HexColor("#4F46E5")
+    light = HexColor("#EEF2FF")
+    green = HexColor("#16A34A")
+    orange = HexColor("#EA580C")
+    red = HexColor("#DC2626")
+    gray = HexColor("#64748B")
+    light_gray = HexColor("#F8FAFC")
+    border = HexColor("#E2E8F0")
+
+    # --------------------------------------------------
+    # HELPER FUNCTIONS
+    # --------------------------------------------------
+
+    def draw_footer():
+
+        pdf.setStrokeColor(border)
+
+        pdf.line(
+            50,
+            38,
+            width - 50,
+            38
+        )
+
+        pdf.setFont(
+            "Helvetica",
+            8
+        )
+
+        pdf.setFillColor(gray)
+
+        pdf.drawString(
+            50,
+            24,
+            "AI Career Intelligence"
+        )
+
+        pdf.drawRightString(
+            width - 50,
+            24,
+            "AI Interview Assessment"
+        )
+
+    def new_page():
+
+        draw_footer()
+
+        pdf.showPage()
+
+        return height - 55
+
+    def draw_section_title(title, y):
+
+        pdf.setFillColor(accent)
+
+        pdf.roundRect(
+            50,
+            y - 5,
+            8,
+            20,
+            4,
+            fill=1,
+            stroke=0
+        )
+
+        pdf.setFillColor(dark)
+
+        pdf.setFont(
+            "Helvetica-Bold",
+            14
+        )
+
+        pdf.drawString(
+            68,
+            y,
+            title
+        )
+
+        return y - 28
+
+    def draw_wrapped_text(
+        text,
+        x,
+        y,
+        max_width,
+        font="Helvetica",
+        size=10,
+        leading=16
+    ):
+
+        pdf.setFont(
+            font,
+            size
+        )
+
+        pdf.setFillColor(dark)
+
+        words = str(text).split()
+
+        line = ""
+
+        for word in words:
+
+            test = (
+                word
+                if not line
+                else line + " " + word
+            )
+
+            if stringWidth(
+                test,
+                font,
+                size
+            ) <= max_width:
+
+                line = test
+
+            else:
+
+                pdf.drawString(
+                    x,
+                    y,
+                    line
+                )
+
+                y -= leading
+
+                line = word
+
+        if line:
+
+            pdf.drawString(
+                x,
+                y,
+                line
+            )
+
+            y -= leading
+
+        return y
+
+    # --------------------------------------------------
+    # DATE
+    # --------------------------------------------------
+
+    report_date = datetime.now().strftime(
+        "%d %B %Y, %I:%M %p"
+    )
+
+    # --------------------------------------------------
+    # PERFORMANCE LEVEL
+    # --------------------------------------------------
+
+    score = float(result.average_score)
+
+    if score >= 8:
+
+        rating = "Excellent"
+        rating_color = green
+
+    elif score >= 6:
+
+        rating = "Good"
+        rating_color = accent
+
+    elif score >= 4:
+
+        rating = "Needs Improvement"
+        rating_color = orange
+
+    else:
+
+        rating = "Requires Improvement"
+        rating_color = red
+
+    # ==================================================
+    # HEADER
+    # ==================================================
+
+    pdf.setFillColor(dark)
+
+    pdf.rect(
+        0,
+        height - 145,
+        width,
+        145,
+        fill=1,
+        stroke=0
+    )
+
+    pdf.setFillColor(colors.white)
+
+    pdf.setFont(
+        "Helvetica-Bold",
+        26
+    )
+
+    pdf.drawString(
+        50,
+        height - 60,
+        "AI INTERVIEW"
+    )
+
+    pdf.setFont(
+        "Helvetica-Bold",
+        18
+    )
+
+    pdf.drawString(
+        50,
+        height - 88,
+        "PERFORMANCE REPORT"
+    )
+
+    pdf.setFont(
+        "Helvetica",
+        10
+    )
+
+    pdf.drawString(
+        50,
+        height - 112,
+        "AI Career Intelligence"
+    )
+
+    pdf.setFont(
+        "Helvetica",
+        9
+    )
+
+    pdf.drawRightString(
+        width - 50,
+        height - 60,
+        "INTERVIEW ASSESSMENT"
+    )
+
+    pdf.drawRightString(
+        width - 50,
+        height - 78,
+        report_date
+    )
+
+    # ==================================================
+    # SCORE CARD
+    # ==================================================
+
+    y = height - 180
+
+    pdf.setFillColor(light_gray)
+
+    pdf.roundRect(
+        50,
+        y - 125,
+        width - 100,
+        125,
+        12,
+        fill=1,
+        stroke=0
+    )
+
+    pdf.setFillColor(gray)
+
+    pdf.setFont(
+        "Helvetica",
+        10
+    )
+
+    pdf.drawString(
+        70,
+        y - 28,
+        "OVERALL PERFORMANCE"
+    )
+
+    pdf.setFillColor(dark)
+
+    pdf.setFont(
+        "Helvetica-Bold",
+        30
+    )
+
+    pdf.drawString(
+        70,
+        y - 65,
+        f"{score:.1f}/10"
+    )
+
+    # Rating badge
+
+    pdf.setFillColor(rating_color)
+
+    pdf.roundRect(
+        190,
+        y - 70,
+        135,
+        28,
+        14,
+        fill=1,
+        stroke=0
+    )
+
+    pdf.setFillColor(colors.white)
+
+    pdf.setFont(
+        "Helvetica-Bold",
+        10
+    )
+
+    pdf.drawCentredString(
+        257,
+        y - 60,
+        rating
+    )
+
+    # Score bar
+
+    bar_x = 70
+    bar_y = y - 100
+    bar_width = width - 140
+    bar_height = 13
+
+    pdf.setFillColor(border)
+
+    pdf.roundRect(
+        bar_x,
+        bar_y,
+        bar_width,
+        bar_height,
+        6,
+        fill=1,
+        stroke=0
+    )
+
+    pdf.setFillColor(accent)
+
+    progress_width = (
+        bar_width *
+        min(max(score, 0), 10) /
+        10
+    )
+
+    pdf.roundRect(
+        bar_x,
+        bar_y,
+        progress_width,
+        bar_height,
+        6,
+        fill=1,
+        stroke=0
+    )
+
+    y -= 160
+
+    # ==================================================
+    # CANDIDATE INFORMATION
+    # ==================================================
+
+    y = draw_section_title(
+        "Candidate Information",
+        y
+    )
+
+    pdf.setFillColor(light)
+
+    pdf.roundRect(
+        50,
+        y - 82,
+        width - 100,
+        82,
+        10,
+        fill=1,
+        stroke=0
+    )
+
+    pdf.setFillColor(dark)
+
+    pdf.setFont(
+        "Helvetica-Bold",
+        10
+    )
+
+    pdf.drawString(
+        70,
+        y - 25,
+        "USER ID"
+    )
+
+    pdf.drawString(
+        300,
+        y - 25,
+        "RECOMMENDED CAREER"
+    )
+
+    pdf.setFont(
+        "Helvetica",
+        11
+    )
+
+    pdf.drawString(
+        70,
+        y - 48,
+        str(result.user_id)
+    )
+
+    pdf.drawString(
+        300,
+        y - 48,
+        str(result.career)
+    )
+
+    pdf.setFont(
+        "Helvetica-Bold",
+        10
+    )
+
+    pdf.drawString(
+        70,
+        y - 68,
+        "INTERVIEW DATE"
+    )
+
+    pdf.setFont(
+        "Helvetica",
+        10
+    )
+
+    pdf.drawString(
+        70,
+        y - 82,
+        report_date
+    )
+
+    y -= 115
+
+    # ==================================================
+    # INTERVIEW STATISTICS
+    # ==================================================
+
+    y = draw_section_title(
+        "Interview Statistics",
+        y
+    )
+
+    card_width = (
+        (width - 120) / 3
+    )
+
+    stats = [
+        (
+            "QUESTIONS",
+            str(result.questions_answered)
+        ),
+        (
+            "AVERAGE SCORE",
+            f"{score:.1f}/10"
+        ),
+        (
+            "FACE WARNINGS",
+            str(result.face_warnings)
+        )
+    ]
+
+    for i, (label, value) in enumerate(stats):
+
+        x = (
+            50 +
+            i * (card_width + 10)
+        )
+
+        pdf.setFillColor(colors.white)
+
+        pdf.roundRect(
+            x,
+            y - 65,
+            card_width,
+            65,
+            10,
+            fill=1,
+            stroke=1
+        )
+
+        pdf.setStrokeColor(border)
+
+        pdf.setFillColor(gray)
+
+        pdf.setFont(
+            "Helvetica",
+            8
+        )
+
+        pdf.drawCentredString(
+            x + card_width / 2,
+            y - 22,
+            label
+        )
+
+        pdf.setFillColor(dark)
+
+        pdf.setFont(
+            "Helvetica-Bold",
+            17
+        )
+
+        pdf.drawCentredString(
+            x + card_width / 2,
+            y - 48,
+            value
+        )
+
+    y -= 95
+
+    # ==================================================
+    # FACE MONITORING
+    # ==================================================
+
+    y = draw_section_title(
+        "Face Monitoring",
+        y
+    )
+
+    if result.face_warnings == 0:
+
+        monitoring_text = (
+            "Excellent — face was visible throughout "
+            "the interview."
+        )
+
+        monitoring_color = green
+
+    else:
+
+        monitoring_text = (
+            f"Face monitoring recorded "
+            f"{result.face_warnings} warning(s)."
+        )
+
+        monitoring_color = orange
+
+    pdf.setFillColor(
+        HexColor("#F8FAFC")
+    )
+
+    pdf.roundRect(
+        50,
+        y - 55,
+        width - 100,
+        55,
+        10,
+        fill=1,
+        stroke=0
+    )
+
+    pdf.setFillColor(
+        monitoring_color
+    )
+
+    pdf.circle(
+        75,
+        y - 28,
+        7,
+        fill=1,
+        stroke=0
+    )
+
+    draw_wrapped_text(
+        monitoring_text,
+        92,
+        y - 32,
+        width - 170,
+        size=10
+    )
+
+    y -= 85
+
+    # ==================================================
+    # STRENGTHS
+    # ==================================================
+
+    if y < 150:
+        y = new_page()
+
+    y = draw_section_title(
+        "Key Strengths",
+        y
+    )
+
+    strengths = (
+        result.strengths
+        or "No strengths recorded."
+    )
+
+    for item in strengths.split(", "):
+
+        if y < 70:
+
+            y = new_page()
+
+            y = draw_section_title(
+                "Key Strengths",
+                y
+            )
+
+        pdf.setFillColor(
+            HexColor("#F0FDF4")
+        )
+
+        pdf.roundRect(
+            50,
+            y - 32,
+            width - 100,
+            32,
+            8,
+            fill=1,
+            stroke=0
+        )
+
+        pdf.setFillColor(green)
+
+        pdf.circle(
+            68,
+            y - 16,
+            5,
+            fill=1,
+            stroke=0
+        )
+
+        y = draw_wrapped_text(
+            item,
+            82,
+            y - 20,
+            width - 145,
+            size=9
+        )
+
+        y -= 8
+
+    # ==================================================
+    # IMPROVEMENTS
+    # ==================================================
+
+    if y < 150:
+
+        y = new_page()
+
+    y -= 10
+
+    y = draw_section_title(
+        "Areas to Improve",
+        y
+    )
+
+    improvements = (
+        result.improvements
+        or "No improvements recorded."
+    )
+
+    for item in improvements.split(", "):
+
+        if y < 70:
+
+            y = new_page()
+
+            y = draw_section_title(
+                "Areas to Improve",
+                y
+            )
+
+        pdf.setFillColor(
+            HexColor("#FFF7ED")
+        )
+
+        pdf.roundRect(
+            50,
+            y - 32,
+            width - 100,
+            32,
+            8,
+            fill=1,
+            stroke=0
+        )
+
+        pdf.setFillColor(orange)
+
+        pdf.circle(
+            68,
+            y - 16,
+            5,
+            fill=1,
+            stroke=0
+        )
+
+        y = draw_wrapped_text(
+            item,
+            82,
+            y - 20,
+            width - 145,
+            size=9
+        )
+
+        y -= 8
+
+    # ==================================================
+    # OVERALL RECOMMENDATION
+    # ==================================================
+
+    if y < 150:
+
+        y = new_page()
+
+    y -= 15
+
+    y = draw_section_title(
+        "Overall Recommendation",
+        y
+    )
+
+    if score >= 8:
+
+        recommendation = (
+            "Excellent interview performance. "
+            "You demonstrated strong communication "
+            "and technical understanding. Continue "
+            "building advanced skills and practical "
+            "experience."
+        )
+
+    elif score >= 6:
+
+        recommendation = (
+            "Good interview performance with clear "
+            "potential. Focus on technical depth, "
+            "structured answers, and practical examples "
+            "to improve further."
+        )
+
+    else:
+
+        recommendation = (
+            "Continue practicing interview questions. "
+            "Focus on providing structured answers, "
+            "adding technical details, and supporting "
+            "your explanations with practical examples."
+        )
+
+    pdf.setFillColor(light)
+
+    pdf.roundRect(
+        50,
+        y - 90,
+        width - 100,
+        90,
+        10,
+        fill=1,
+        stroke=0
+    )
+
+    pdf.setFillColor(accent)
+
+    pdf.setFont(
+        "Helvetica-Bold",
+        11
+    )
+
+    pdf.drawString(
+        70,
+        y - 25,
+        "AI FEEDBACK"
+    )
+
+    draw_wrapped_text(
+        recommendation,
+        70,
+        y - 48,
+        width - 140,
+        size=9,
+        leading=15
+    )
+
+    # ==================================================
+    # FOOTER
+    # ==================================================
+
+    draw_footer()
+
+    pdf.save()
+
+    return FileResponse(
+        file_path,
+        media_type="application/pdf",
+        filename=file_name
+    )

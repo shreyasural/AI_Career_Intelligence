@@ -97,7 +97,32 @@
 .history-card p {
     margin: 8px 0;
 }
+.dashboard {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 15px;
+    margin: 20px 0;
+}
+
+.stat-card {
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 15px;
+    text-align: center;
+    background: #f8f9fa;
+}
+
+.stat-card h3 {
+    margin-bottom: 10px;
+}
+
+.stat-card p {
+    font-size: 24px;
+    font-weight: bold;
+    margin: 0;
+}
     </style>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
 <body>
@@ -193,7 +218,37 @@
 
     <!-- FINAL RESULT -->
     <div id="finalResult"></div>
+    <button id="downloadReportBtn" onclick="downloadPDFReport()">
+    📄 Download PDF Report
+</button>
+<h2>📊 Performance Dashboard</h2>
 
+<div class="dashboard">
+
+    <div class="stat-card">
+        <h3>Total Interviews</h3>
+        <p id="totalInterviews">0</p>
+    </div>
+
+    <div class="stat-card">
+        <h3>Average Score</h3>
+        <p id="overallAverage">0.0</p>
+    </div>
+
+    <div class="stat-card">
+        <h3>Best Score</h3>
+        <p id="bestScore">0.0</p>
+    </div>
+
+    <div class="stat-card">
+        <h3>Face Warnings</h3>
+        <p id="totalWarnings">0</p>
+    </div>
+
+</div>
+<h2>📈 Interview Performance</h2>
+
+<canvas id="performanceChart" width="700" height="300"></canvas>
     <h2>📚 Interview History</h2>
 
 <button onclick="loadInterviewHistory()">
@@ -1362,6 +1417,7 @@ function startInterview() {
     // Load interview questions
     loadInterview();
 }
+
 async function loadInterviewHistory() {
     const historyBox =
         document.getElementById("interviewHistory");
@@ -1390,7 +1446,8 @@ async function loadInterviewHistory() {
                 "<p>No interview history found.</p>";
             return;
         }
-
+        updateDashboard(results);
+        updatePerformanceChart(results);
         historyBox.innerHTML = results.map(result => `
             <div class="history-card">
 
@@ -1432,6 +1489,250 @@ async function loadInterviewHistory() {
 
         historyBox.innerText =
             "Could not load interview history.";
+    }
+}
+function updateDashboard(results) {
+
+    if (!results || results.length === 0) {
+        return;
+    }
+
+    const totalInterviews = results.length;
+
+    const totalScore = results.reduce(
+        (sum, result) =>
+            sum + result.average_score,
+        0
+    );
+
+    const overallAverage =
+        totalScore / totalInterviews;
+
+    const bestScore = Math.max(
+        ...results.map(
+            result => result.average_score
+        )
+    );
+
+    const totalWarnings = results.reduce(
+        (sum, result) =>
+            sum + result.face_warnings,
+        0
+    );
+
+    document.getElementById("totalInterviews")
+        .innerText = totalInterviews;
+
+    document.getElementById("overallAverage")
+        .innerText = overallAverage.toFixed(1);
+
+    document.getElementById("bestScore")
+        .innerText = bestScore.toFixed(1);
+
+    document.getElementById("totalWarnings")
+        .innerText = totalWarnings;
+}
+let performanceChartInstance = null;
+
+function updatePerformanceChart(results) {
+
+    const canvas =
+        document.getElementById("performanceChart");
+
+    if (!canvas) {
+        console.error("Performance chart canvas not found.");
+        return;
+    }
+
+    const labels = results.map(
+        (result, index) =>
+            `Interview ${index + 1}`
+    );
+
+    const scores = results.map(
+        result => result.average_score
+    );
+
+    // Destroy the previous Chart.js instance
+    if (performanceChartInstance) {
+        performanceChartInstance.destroy();
+        performanceChartInstance = null;
+    }
+
+    performanceChartInstance = new Chart(
+        canvas,
+        {
+            type: "line",
+
+            data: {
+                labels: labels,
+
+                datasets: [{
+                    label: "Interview Score",
+                    data: scores,
+                    borderWidth: 2,
+                    tension: 0.3
+                }]
+            },
+
+            options: {
+                responsive: true,
+
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 10,
+
+                        title: {
+                            display: true,
+                            text: "Score / 10"
+                        }
+                    },
+
+                    x: {
+                        title: {
+                            display: true,
+                            text: "Interview Attempts"
+                        }
+                    }
+                }
+            }
+        }
+    );
+}
+function downloadInterviewReport() {
+
+    if (!career || scores.length === 0) {
+        alert("Please complete an interview first.");
+        return;
+    }
+
+    const totalScore = scores.reduce(
+        (sum, score) => sum + score,
+        0
+    );
+
+    const averageScore =
+        totalScore / scores.length;
+
+    const strengths =
+        [...new Set(allStrengths)].join(", ");
+
+    const improvements =
+        [...new Set(allImprovements)].join(", ");
+
+    const report =
+`AI INTERVIEW PERFORMANCE REPORT
+
+Career: ${career}
+
+User ID: ${userId}
+
+Questions Answered:
+${scores.length}/${questions.length}
+
+Average Score:
+${averageScore.toFixed(1)}/10
+
+Face Warnings:
+${faceWarnings}
+
+STRENGTHS:
+${strengths || "No strengths recorded."}
+
+AREAS TO IMPROVE:
+${improvements || "No improvements recorded."}
+
+Face Monitoring:
+${
+    faceWarnings === 0
+        ? "Excellent - face was visible throughout the interview."
+        : "Face monitoring recorded " + faceWarnings + " warning(s)."
+}
+
+Generated by AI Career Intelligence
+`;
+
+    const blob = new Blob(
+        [report],
+        { type: "text/plain" }
+    );
+
+    const url =
+        URL.createObjectURL(blob);
+
+    const link =
+        document.createElement("a");
+
+    link.href = url;
+
+    link.download =
+        "AI_Interview_Performance_Report.txt";
+
+    document.body.appendChild(link);
+
+    link.click();
+
+    document.body.removeChild(link);
+
+    URL.revokeObjectURL(url);
+}
+async function downloadPDFReport() {
+
+    if (!userId) {
+        alert("Please enter a valid User ID.");
+        return;
+    }
+
+    try {
+
+        const response = await fetch(
+            `http://127.0.0.1:8000/download-report/${userId}`
+        );
+
+        if (!response.ok) {
+
+            const errorData =
+                await response.json();
+
+            throw new Error(
+                errorData.detail ||
+                "Could not generate PDF report"
+            );
+        }
+
+        const blob =
+            await response.blob();
+
+        const url =
+            URL.createObjectURL(blob);
+
+        const link =
+            document.createElement("a");
+
+        link.href = url;
+
+        link.download =
+            "AI_Interview_Performance_Report.pdf";
+
+        document.body.appendChild(link);
+
+        link.click();
+
+        document.body.removeChild(link);
+
+        URL.revokeObjectURL(url);
+
+    } catch (error) {
+
+        console.error(
+            "PDF download error:",
+            error
+        );
+
+        alert(
+            "Could not download PDF report."
+        );
     }
 }
     </script>

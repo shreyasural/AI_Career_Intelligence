@@ -339,3 +339,303 @@ def evaluate_interview_answer(question, answer, career):
         "strengths": strengths,
         "areas_to_improve": improvements
     }
+# app/career_engine.py
+
+CAREER_KEYWORDS = {
+    "Machine Learning Engineer": [
+        "python", "machine learning", "ml", "tensorflow",
+        "pytorch", "scikit-learn", "numpy", "pandas"
+    ],
+
+    "AI Engineer": [
+        "python", "artificial intelligence", "ai",
+        "machine learning", "deep learning", "nlp",
+        "tensorflow", "pytorch"
+    ],
+
+    "Data Scientist": [
+        "python", "sql", "statistics", "pandas",
+        "numpy", "machine learning", "data analysis"
+    ],
+
+    "Backend Developer": [
+        "python", "java", "node", "sql",
+        "api", "fastapi", "django", "backend"
+    ],
+
+    "Frontend Developer": [
+        "html", "css", "javascript", "react",
+        "frontend", "typescript"
+    ],
+
+    "Full Stack Developer": [
+        "html", "css", "javascript", "react",
+        "python", "node", "sql", "api"
+    ],
+
+    "Database Developer": [
+        "sql", "postgresql", "mysql",
+        "database", "mongodb"
+    ]
+}
+
+
+def get_multiple_career_recommendations(
+    skills,
+    interests="",
+    education="",
+    experience=""
+):
+    """
+    Generate ranked career recommendations.
+    """
+
+    skills_text = skills.lower() if skills else ""
+    interests_text = interests.lower() if interests else ""
+    education_text = education.lower() if education else ""
+    experience_text = experience.lower() if experience else ""
+
+    results = []
+
+    for career, keywords in CAREER_KEYWORDS.items():
+
+        skill_matches = 0
+        interest_matches = 0
+
+        matched_skills = []
+
+        for keyword in keywords:
+
+            if keyword in skills_text:
+                skill_matches += 1
+                matched_skills.append(keyword)
+
+            if keyword in interests_text:
+                interest_matches += 1
+
+        total_keywords = len(keywords)
+
+        skill_score = (
+            skill_matches / total_keywords
+        ) * 70
+
+        interest_score = (
+            interest_matches / total_keywords
+        ) * 20
+
+        education_score = 5 if "computer" in education_text else 0
+
+        experience_score = 5 if experience_text and experience_text != "fresher" else 0
+
+        final_score = (
+            skill_score +
+            interest_score +
+            education_score +
+            experience_score
+        )
+
+        final_score = min(round(final_score), 100)
+
+        results.append({
+            "career": career,
+            "match_percentage": final_score,
+            "matched_skills": matched_skills
+        })
+
+    results.sort(
+        key=lambda x: x["match_percentage"],
+        reverse=True
+    )
+
+    return results
+def get_career_readiness_analysis(
+    skills,
+    interests,
+    education,
+    experience,
+    career
+):
+    skills_text = (skills or "").lower()
+    interests_text = (interests or "").lower()
+
+    career_keywords = CAREER_KEYWORDS.get(career, [])
+
+    matched_skills = []
+    missing_skills = []
+
+    for keyword in career_keywords:
+
+        if keyword in skills_text:
+            matched_skills.append(keyword)
+        else:
+            missing_skills.append(keyword)
+
+    # Skill readiness
+    if career_keywords:
+        skill_score = round(
+            (len(matched_skills) / len(career_keywords)) * 100
+        )
+    else:
+        skill_score = 0
+
+    # Interest match
+    interest_matches = sum(
+        1
+        for keyword in career_keywords
+        if keyword in interests_text
+    )
+
+    if career_keywords:
+        interest_score = round(
+            (interest_matches / len(career_keywords)) * 100
+        )
+    else:
+        interest_score = 0
+
+    # Education
+    education_score = 100 if education else 0
+
+    # Experience
+    experience_text = (experience or "").lower()
+
+    if "intern" in experience_text:
+        experience_score = 80
+    elif "experience" in experience_text:
+        experience_score = 90
+    elif "project" in experience_text:
+        experience_score = 70
+    elif "fresher" in experience_text:
+        experience_score = 40
+    else:
+        experience_score = 30
+
+    # Final readiness score
+    readiness_score = round(
+        (skill_score * 0.50) +
+        (interest_score * 0.20) +
+        (education_score * 0.10) +
+        (experience_score * 0.20)
+    )
+
+    readiness_score = min(readiness_score, 100)
+
+    # Readiness level
+    if readiness_score >= 85:
+        level = "Excellent Match"
+    elif readiness_score >= 70:
+        level = "Strong Match"
+    elif readiness_score >= 50:
+        level = "Moderate Match"
+    else:
+        level = "Needs Improvement"
+
+    return {
+        "career": career,
+        "readiness_score": readiness_score,
+        "level": level,
+        "matched_skills": matched_skills,
+        "missing_skills": missing_skills,
+        "skill_score": skill_score,
+        "interest_score": interest_score,
+        "education_score": education_score,
+        "experience_score": experience_score
+    }
+def get_career_gap_action_plan(
+    skills,
+    interests="",
+    education="",
+    experience="",
+    career=""
+):
+    """
+    Generates a personalized career gap and action plan.
+    """
+
+    # Get required skills for the selected career
+    required_skills = CAREER_KEYWORDS.get(career, [])
+
+    # Convert user skills into a clean list
+    user_skills = [
+        skill.strip().lower()
+        for skill in (skills or "").split(",")
+        if skill.strip()
+    ]
+
+    # Find matched and missing skills
+    matched_skills = []
+    missing_skills = []
+
+    for required in required_skills:
+        if any(
+            required.lower() in user_skill
+            or user_skill in required.lower()
+            for user_skill in user_skills
+        ):
+            matched_skills.append(required)
+        else:
+            missing_skills.append(required)
+
+    # Calculate skill gap
+    if required_skills:
+        skill_score = round(
+            (len(matched_skills) / len(required_skills)) * 100
+        )
+    else:
+        skill_score = 0
+
+    # Prioritize the first few missing skills
+    priority_skills = missing_skills[:3]
+
+    # Generate recommended action
+    if missing_skills:
+        recommended_action = (
+            f"Focus on learning {priority_skills[0]} first "
+            "and build a practical project using it."
+        )
+    elif matched_skills:
+        recommended_action = (
+            "Your core skills match this career. "
+            "Focus on advanced projects and interview preparation."
+        )
+    else:
+        recommended_action = (
+            "Start with the fundamental skills required for this career."
+        )
+
+    # Generate project recommendation
+    if career == "Machine Learning Engineer":
+        project = "Build an ML prediction project using Python and scikit-learn."
+    elif career == "AI Engineer":
+        project = "Build an AI application using Python and an ML/AI framework."
+    elif career == "Data Scientist":
+        project = "Build a data analysis and prediction project using Python, Pandas and SQL."
+    elif career == "Backend Developer":
+        project = "Build a REST API using FastAPI or Django with PostgreSQL."
+    elif career == "Frontend Developer":
+        project = "Build a responsive web application using HTML, CSS and JavaScript."
+    elif career == "Full Stack Developer":
+        project = "Build a complete web application with frontend, backend and database."
+    elif career == "Database Developer":
+        project = "Build a database-driven application using SQL and PostgreSQL."
+    else:
+        project = "Build a practical software project related to your target career."
+
+    # Expected improvement
+    if missing_skills:
+        expected_improvement = min(
+            100,
+            skill_score + len(priority_skills) * 10
+        )
+    else:
+        expected_improvement = min(100, skill_score + 10)
+
+    return {
+        "career": career,
+        "skill_score": skill_score,
+        "matched_skills": matched_skills,
+        "missing_skills": missing_skills,
+        "priority_skills": priority_skills,
+        "recommended_action": recommended_action,
+        "recommended_project": project,
+        "expected_improvement": expected_improvement
+    }

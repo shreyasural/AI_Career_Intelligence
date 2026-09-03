@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Depends
+from fastapi import FastAPI, Depends, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from reportlab.pdfgen import canvas
@@ -14,6 +14,16 @@ from app.schemas import (
     CareerProfileCreate,
     CareerProfileResponse
 )
+from app.career_engine import (
+    recommend_career,
+    analyze_skill_gap,
+    learning_roadmap,
+    get_interview_questions,
+    evaluate_interview_answer,
+    get_multiple_career_recommendations,
+    get_career_readiness_analysis,
+    get_career_gap_action_plan
+)
 from fastapi.responses import FileResponse
 from reportlab.lib.pagesizes import A4
 from reportlab.pdfgen import canvas
@@ -27,6 +37,7 @@ from app.schemas import (
     InterviewAnswerRequest,
     InterviewResultCreate
 )
+from app.career_engine import get_multiple_career_recommendations
 from fastapi import UploadFile, File
 import cv2
 import numpy as np
@@ -1175,3 +1186,424 @@ def download_report(user_id: int, db: Session = Depends(get_db)):
         media_type="application/pdf",
         filename=file_name
     )
+@app.get("/career-recommendations/{user_id}")
+def career_recommendations(user_id: int, db: Session = Depends(get_db)):
+
+    profile = (
+        db.query(models.CareerProfile)
+        .filter(models.CareerProfile.user_id == user_id)
+        .first()
+    )
+
+    if not profile:
+        raise HTTPException(
+            status_code=404,
+            detail="Career profile not found"
+        )
+
+    recommendations = get_multiple_career_recommendations(
+        skills=profile.skills,
+        interests=profile.interests,
+        education=profile.education,
+        experience=profile.experience
+    )
+
+    return {
+        "user_id": user_id,
+        "recommendations": recommendations
+    }
+@app.get("/career-readiness/{user_id}")
+def career_readiness(user_id: int, db: Session = Depends(get_db)):
+
+    profile = (
+        db.query(models.CareerProfile)
+        .filter(models.CareerProfile.user_id == user_id)
+        .first()
+    )
+
+    if not profile:
+        raise HTTPException(
+            status_code=404,
+            detail="Career profile not found"
+        )
+
+    # -----------------------------
+    # SKILL SCORE
+    # -----------------------------
+
+    skills = profile.skills or ""
+
+    skill_list = [
+        skill.strip()
+        for skill in skills.split(",")
+        if skill.strip()
+    ]
+
+    skill_score = min(len(skill_list) * 10, 100)
+
+    # -----------------------------
+    # EXPERIENCE SCORE
+    # -----------------------------
+
+    experience = (profile.experience or "").lower()
+
+    if "intern" in experience:
+        experience_score = 80
+    elif "experience" in experience:
+        experience_score = 90
+    elif "fresher" in experience:
+        experience_score = 50
+    else:
+        experience_score = 40
+
+    # -----------------------------
+    # PROJECT / PROFILE SCORE
+    # -----------------------------
+
+    profile_score = 0
+
+    if profile.education:
+        profile_score += 25
+
+    if profile.interests:
+        profile_score += 25
+
+    if profile.skills:
+        profile_score += 50
+
+    # -----------------------------
+    # FINAL SCORE
+    # -----------------------------
+
+    readiness_score = round(
+        (skill_score * 0.45) +
+        (experience_score * 0.25) +
+        (profile_score * 0.30)
+    )
+
+    # -----------------------------
+    # LEVEL
+    # -----------------------------
+
+    if readiness_score >= 80:
+        level = "Highly Ready"
+    elif readiness_score >= 60:
+        level = "Career Ready"
+    elif readiness_score >= 40:
+        level = "Developing"
+    else:
+        level = "Beginner"
+
+    return {
+        "user_id": user_id,
+        "career_readiness_score": readiness_score,
+        "level": level,
+        "breakdown": {
+            "skills": skill_score,
+            "experience": experience_score,
+            "profile": profile_score
+        }
+    }
+@app.get("/career-readiness/{user_id}")
+def career_readiness(user_id: int, db: Session = Depends(get_db)):
+
+    # Get career profile
+    profile = (
+        db.query(models.CareerProfile)
+        .filter(models.CareerProfile.user_id == user_id)
+        .first()
+    )
+
+    if not profile:
+        raise HTTPException(
+            status_code=404,
+            detail="Career profile not found"
+        )
+
+    # ------------------------------------------------
+    # 1. SKILL SCORE - 30%
+    # ------------------------------------------------
+
+    skills = profile.skills or ""
+
+    skill_list = [
+        skill.strip()
+        for skill in skills.split(",")
+        if skill.strip()
+    ]
+
+    skill_score = min(len(skill_list) * 12, 100)
+
+
+    # ------------------------------------------------
+    # 2. INTERVIEW SCORE - 25%
+    # ------------------------------------------------
+
+    interviews = (
+        db.query(models.InterviewResult)
+        .filter(models.InterviewResult.user_id == user_id)
+        .all()
+    )
+
+    if interviews:
+        interview_score = sum(
+            interview.average_score
+            for interview in interviews
+        ) / len(interviews)
+
+        # Convert 0-10 score to 0-100
+        interview_score = min(
+            round(interview_score * 10),
+            100
+        )
+    else:
+        interview_score = 0
+
+
+    # ------------------------------------------------
+    # 3. LEARNING PROGRESS - 20%
+    # ------------------------------------------------
+
+    learning_score = 0
+
+    if profile.skills:
+        learning_score += 40
+
+    if profile.interests:
+        learning_score += 20
+
+    if profile.recommended_career:
+        learning_score += 40
+
+    learning_score = min(learning_score, 100)
+
+
+    # ------------------------------------------------
+    # 4. PROJECT / EXPERIENCE SCORE - 15%
+    # ------------------------------------------------
+
+    experience = (profile.experience or "").lower()
+
+    if "project" in experience:
+        project_score = 100
+    elif "intern" in experience:
+        project_score = 80
+    elif "experience" in experience:
+        project_score = 70
+    elif "fresher" in experience:
+        project_score = 40
+    else:
+        project_score = 30
+
+
+    # ------------------------------------------------
+    # 5. PROFILE COMPLETENESS - 10%
+    # ------------------------------------------------
+
+    profile_score = 0
+
+    if profile.skills:
+        profile_score += 30
+
+    if profile.education:
+        profile_score += 25
+
+    if profile.experience:
+        profile_score += 20
+
+    if profile.interests:
+        profile_score += 25
+
+    profile_score = min(profile_score, 100)
+
+
+    # ------------------------------------------------
+    # FINAL CAREER READINESS SCORE
+    # ------------------------------------------------
+
+    readiness_score = round(
+        (skill_score * 0.30) +
+        (interview_score * 0.25) +
+        (learning_score * 0.20) +
+        (project_score * 0.15) +
+        (profile_score * 0.10)
+    )
+
+
+    # ------------------------------------------------
+    # READINESS LEVEL
+    # ------------------------------------------------
+
+    if readiness_score >= 85:
+        level = "Excellent"
+    elif readiness_score >= 70:
+        level = "Career Ready"
+    elif readiness_score >= 50:
+        level = "Developing"
+    else:
+        level = "Beginner"
+
+
+    return {
+        "user_id": user_id,
+        "career_readiness_score": readiness_score,
+        "level": level,
+        "breakdown": {
+            "skills": skill_score,
+            "interview": interview_score,
+            "learning": learning_score,
+            "projects": project_score,
+            "profile": profile_score
+        }
+    }
+@app.get("/career-readiness-analysis/{user_id}")
+def career_readiness_analysis(
+    user_id: int,
+    db: Session = Depends(get_db)
+):
+
+    profile = (
+        db.query(models.CareerProfile)
+        .filter(models.CareerProfile.user_id == user_id)
+        .first()
+    )
+
+    if not profile:
+        raise HTTPException(
+            status_code=404,
+            detail="Career profile not found"
+        )
+
+    recommendations = get_multiple_career_recommendations(
+        skills=profile.skills,
+        interests=profile.interests,
+        education=profile.education,
+        experience=profile.experience
+    )
+
+    analysis = []
+
+    for recommendation in recommendations:
+
+        career = recommendation["career"]
+
+        result = get_career_readiness_analysis(
+            skills=profile.skills,
+            interests=profile.interests,
+            education=profile.education,
+            experience=profile.experience,
+            career=career
+        )
+
+        analysis.append(result)
+
+    return {
+        "user_id": user_id,
+        "career_analysis": analysis
+    }
+@app.get("/career-gap-action-plan/{user_id}")
+def career_gap_action_plan(user_id: int, db: Session = Depends(get_db)):
+
+    profile = (
+        db.query(models.CareerProfile)
+        .filter(models.CareerProfile.user_id == user_id)
+        .first()
+    )
+
+    if not profile:
+        raise HTTPException(
+            status_code=404,
+            detail="Career profile not found"
+        )
+
+    # Get career recommendations
+    recommendations = get_multiple_career_recommendations(
+        skills=profile.skills,
+        interests=profile.interests,
+        education=profile.education,
+        experience=profile.experience
+    )
+
+    if not recommendations:
+        raise HTTPException(
+            status_code=404,
+            detail="No career recommendations found"
+        )
+
+    # Use the highest-ranked career
+    selected_career = recommendations[0]["career"]
+
+    # Generate career gap and action plan
+    action_plan = get_career_gap_action_plan(
+        skills=profile.skills,
+        interests=profile.interests,
+        education=profile.education,
+        experience=profile.experience,
+        career=selected_career
+    )
+
+    # Get interview performance
+    interviews = (
+        db.query(models.InterviewResult)
+        .filter(models.InterviewResult.user_id == user_id)
+        .all()
+    )
+
+    if interviews:
+        average_interview_score = round(
+            sum(i.average_score for i in interviews)
+            / len(interviews),
+            2
+        )
+
+        interview_score = min(
+            round(average_interview_score * 10),
+            100
+        )
+
+        interview_gap = max(0, 100 - interview_score)
+
+        if interview_score >= 80:
+            interview_action = (
+                "Your interview performance is strong. "
+                "Focus on advanced technical and behavioral questions."
+            )
+        elif interview_score >= 60:
+            interview_action = (
+                "Improve interview performance by giving more "
+                "detailed explanations and practical examples."
+            )
+        else:
+            interview_action = (
+                "Practice mock interviews regularly and strengthen "
+                "your technical explanations."
+            )
+
+    else:
+        average_interview_score = 0
+        interview_score = 0
+        interview_gap = 100
+
+        interview_action = (
+            "Complete a mock interview to evaluate your "
+            "interview readiness."
+        )
+
+    return {
+        "user_id": user_id,
+        "selected_career": selected_career,
+
+        "career_gap": action_plan,
+
+        "interview_analysis": {
+            "average_score": average_interview_score,
+            "interview_score": interview_score,
+            "interview_gap": interview_gap,
+            "recommended_action": interview_action
+        },
+
+        "next_steps": [
+            f"Learn {skill}"
+            for skill in action_plan["priority_skills"]
+        ]
+    }

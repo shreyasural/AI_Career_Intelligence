@@ -1,0 +1,880 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>AI Career Intelligence | Dashboard</title>
+
+    <!-- Google Font -->
+    <link rel="preconnect"
+          href="https://fonts.googleapis.com">
+
+    <link rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+          rel="stylesheet">
+
+    <!-- Dashboard CSS -->
+    <link rel="stylesheet" href="dashboard.css">
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+
+    <!-- =====================================================
+         BACKGROUND EFFECTS
+    ====================================================== -->
+
+    <div class="ambient ambient-a"></div>
+    <div class="ambient ambient-b"></div>
+
+
+    <!-- =====================================================
+         SIDEBAR
+    ====================================================== -->
+
+    <aside class="sidebar" id="sidebar">
+
+        <!-- Brand -->
+        <div class="brand">
+
+            <div class="brand-mark">
+                ✦
+            </div>
+
+            <div>
+                <strong>
+                    Career<span>AI</span>
+                </strong>
+
+                <small>
+                    INTELLIGENCE
+                </small>
+            </div>
+
+        </div>
+
+
+        <!-- Mini Profile -->
+        <div class="profile-mini">
+
+            <div class="avatar"
+                 id="sideAvatar">
+                AI
+            </div>
+
+            <div>
+
+                <b id="sideName">
+                    Career Explorer
+                </b>
+
+                <small>
+                    Personal workspace
+                </small>
+
+            </div>
+
+        </div>
+
+
+        <!-- Navigation -->
+        <nav class="nav">
+
+            <p class="nav-label">
+                WORKSPACE
+            </p>
+
+
+            <!-- Dashboard -->
+            <a href="dashboard.html"
+               class="nav-item active"
+               data-page="dashboard">
+
+                <span>⌂</span>
+
+                Dashboard
+
+            </a>
+
+
+            <!-- Career Analysis -->
+            <a href="career_analysis.html" class="nav-item"></a>
+               data-page="career_analysis">
+
+                <span>◈</span>
+
+                Career Analysis
+
+            </a>
+
+
+            <!-- Learning Roadmap -->
+            <a href="learning-roadmap.html"
+               class="nav-item"
+               data-page="learning-roadmap">
+
+                <span>◫</span>
+
+                Learning Roadmap
+
+            </a>
+
+
+            <!-- Mock Interview -->
+            <a href="interview.html"
+               class="nav-item"
+               data-page="interview">
+
+                <span>◉</span>
+
+                Mock Interview
+
+            </a>
+
+
+            <!-- Interview History -->
+            <a href="interview-history.html"
+               class="nav-item"
+               data-page="history">
+
+                <span>↺</span>
+
+                Interview History
+
+            </a>
+
+
+            <p class="nav-label">
+                ACCOUNT
+            </p>
+
+
+            <!-- Profile -->
+            <a href="profile.html"
+               class="nav-item"
+               data-page="profile">
+
+                <span>◎</span>
+
+                My Profile
+
+            </a>
+
+        </nav>
+
+
+        <!-- Sidebar Bottom -->
+        <div class="sidebar-bottom">
+
+            <div class="ai-status">
+
+                <i></i>
+
+                <div>
+
+                    <b>
+                        AI Engine Online
+                    </b>
+
+                    <small>
+                        Insights are up to date
+                    </small>
+
+                </div>
+
+            </div>
+
+
+            <button class="collapse-btn"
+                    id="collapseBtn">
+
+                ‹
+
+            </button>
+
+        </div>
+
+    </aside>
+
+
+
+    <!-- =====================================================
+         MAIN CONTENT
+    ====================================================== -->
+
+    <main class="main">
+
+
+        <!-- =================================================
+             TOP BAR
+        ================================================== -->
+
+        <header class="topbar">
+
+            <!-- Mobile Menu -->
+            <button class="mobile-menu"
+                    id="mobileMenu">
+
+                ☰
+
+            </button>
+
+
+            <div>
+
+                <p class="eyebrow">
+                    PERSONAL CAREER COMMAND CENTER
+                </p>
+
+                <h1>
+
+                    Good to see you,
+
+                    <span id="userName">
+                        there
+                    </span>
+
+                    <span class="wave">
+                        ✦
+                    </span>
+
+                </h1>
+
+            </div>
+
+
+            <!-- Right Actions -->
+            <div class="top-actions">
+
+
+                <!-- Refresh -->
+                <button class="icon-btn"
+                        id="refreshBtn"
+                        title="Refresh dashboard">
+
+                    ↻
+
+                </button>
+
+
+                <!-- User -->
+                <div class="user-chip">
+
+                    <div class="avatar small"
+                         id="topAvatar">
+
+                        AI
+
+                    </div>
+
+                    <span id="topName">
+                        Career Explorer
+                    </span>
+
+                </div>
+
+            </div>
+
+        </header>
+
+
+
+        <!-- =================================================
+             HERO SECTION
+        ================================================== -->
+
+        <section class="hero-grid">
+
+
+            <!-- Career Match -->
+            <div class="hero-card glass">
+
+                <div class="hero-copy">
+
+                    <span class="pill">
+
+                        ✦ AI CAREER MATCH
+
+                    </span>
+
+
+                    <h2 id="heroCareer">
+
+                        Analyzing your best career...
+
+                    </h2>
+
+
+                    <p id="heroText">
+
+                        Your profile, interests and skills
+                        are being evaluated by the career
+                        intelligence engine.
+
+                    </p>
+
+
+                    <div class="hero-actions">
+
+
+                        <!-- Career Analysis -->
+                        <button class="primary-btn"
+                                onclick="go('career-analysis.html')">
+
+                            Explore Career Fit
+
+                            <span>
+                                →
+                            </span>
+
+                        </button>
+
+
+                        <!-- Mock Interview -->
+                        <button class="ghost-btn"
+                                onclick="go('interview.html')">
+
+                            Start Mock Interview
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Animated Match Orb -->
+                <div class="match-orb">
+
+                    <div class="orb-ring">
+
+                        <div>
+
+                            <strong id="heroMatch">
+                                --
+                            </strong>
+
+                            <small>
+                                match
+                            </small>
+
+                        </div>
+
+                    </div>
+
+
+                    <span class="orbit-dot"></span>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- =================================================
+                 CAREER READINESS
+            ================================================== -->
+
+            <div class="readiness-card glass">
+
+                <div class="section-head">
+
+                    <div>
+
+                        <span class="overline">
+                            READINESS
+                        </span>
+
+                        <h3>
+                            Career Readiness
+                        </h3>
+
+                    </div>
+
+
+                    <span class="trend"
+                          id="readinessLevel">
+
+                        —
+
+                    </span>
+
+                </div>
+
+
+                <div class="readiness-layout">
+
+
+                    <!-- Donut Chart -->
+                    <div class="donut-wrap">
+
+                        <canvas id="readinessChart">
+                        </canvas>
+
+
+                        <div class="donut-center">
+
+                            <strong id="readinessScore">
+                                0
+                            </strong>
+
+                            <small>
+                                /100
+                            </small>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- Breakdown -->
+                    <div class="readiness-bars"
+                         id="readinessBars">
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =================================================
+             STATISTICS
+        ================================================== -->
+
+        <section class="stats-grid">
+
+
+            <!-- Total Interviews -->
+            <div class="stat-card glass">
+
+                <div class="stat-icon">
+                    ◉
+                </div>
+
+                <span>
+                    Interviews
+                </span>
+
+                <strong id="totalInterviews">
+                    0
+                </strong>
+
+                <small>
+                    completed sessions
+                </small>
+
+            </div>
+
+
+            <!-- Average Score -->
+            <div class="stat-card glass">
+
+                <div class="stat-icon">
+                    ★
+                </div>
+
+                <span>
+                    Average Score
+                </span>
+
+                <strong id="avgScore">
+                    0.0
+                </strong>
+
+                <small>
+                    out of 10
+                </small>
+
+            </div>
+
+
+            <!-- Best Score -->
+            <div class="stat-card glass">
+
+                <div class="stat-icon">
+                    ↗
+                </div>
+
+                <span>
+                    Best Score
+                </span>
+
+                <strong id="bestScore">
+                    0.0
+                </strong>
+
+                <small>
+                    personal best
+                </small>
+
+            </div>
+
+
+            <!-- Face Warnings -->
+            <div class="stat-card glass">
+
+                <div class="stat-icon">
+                    ◌
+                </div>
+
+                <span>
+                    Face Warnings
+                </span>
+
+                <strong id="faceWarnings">
+                    0
+                </strong>
+
+                <small>
+                    monitoring alerts
+                </small>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =================================================
+             PERFORMANCE + AI INSIGHTS
+        ================================================== -->
+
+        <section class="dashboard-grid">
+
+
+            <!-- =================================================
+                 PERFORMANCE CHART
+            ================================================== -->
+
+            <div class="panel glass wide">
+
+                <div class="section-head">
+
+                    <div>
+
+                        <span class="overline">
+                            PERFORMANCE
+                        </span>
+
+                        <h3>
+                            Interview Momentum
+                        </h3>
+
+                    </div>
+
+
+                    <span class="live-badge">
+
+                        ● LIVE DATA
+
+                    </span>
+
+                </div>
+
+
+                <div class="chart-box">
+
+                    <canvas id="performanceChart">
+                    </canvas>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- =================================================
+                 AI INSIGHTS
+            ================================================== -->
+
+            <div class="panel glass">
+
+                <div class="section-head">
+
+                    <div>
+
+                        <span class="overline">
+                            AI INSIGHTS
+                        </span>
+
+                        <h3>
+                            What AI sees
+                        </h3>
+
+                    </div>
+
+                    <span>
+                        ✦
+                    </span>
+
+                </div>
+
+
+                <div id="insights"
+                     class="insights">
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =================================================
+             CAREER MATCH + SKILL GAP
+        ================================================== -->
+
+        <section class="dashboard-grid lower">
+
+
+            <!-- =================================================
+                 CAREER MATCHES
+            ================================================== -->
+
+            <div class="panel glass">
+
+                <div class="section-head">
+
+                    <div>
+
+                        <span class="overline">
+                            CAREER FIT
+                        </span>
+
+                        <h3>
+                            Top Career Matches
+                        </h3>
+
+                    </div>
+
+
+                    <button class="text-btn"
+                            onclick="go('career-analysis.html')">
+
+                        View all →
+
+                    </button>
+
+                </div>
+
+
+                <div id="careerMatches"
+                     class="career-matches">
+
+                </div>
+
+            </div>
+
+
+
+            <!-- =================================================
+                 PRIORITY SKILLS
+            ================================================== -->
+
+            <div class="panel glass">
+
+                <div class="section-head">
+
+                    <div>
+
+                        <span class="overline">
+                            SKILL GAP
+                        </span>
+
+                        <h3>
+                            Priority Skills
+                        </h3>
+
+                    </div>
+
+
+                    <button class="text-btn"
+                            onclick="go('learning-roadmap.html')">
+
+                        Roadmap →
+
+                    </button>
+
+                </div>
+
+
+                <div id="prioritySkills"
+                     class="skill-list">
+
+                </div>
+
+
+                <!-- AI Action -->
+                <div class="action-callout"
+                     id="nextAction">
+
+                    AI is preparing your next
+                    best action...
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =================================================
+             PERSONALIZED ROADMAP
+        ================================================== -->
+
+        <section class="panel glass roadmap-panel">
+
+            <div class="section-head">
+
+                <div>
+
+                    <span class="overline">
+                        PERSONALIZED PLAN
+                    </span>
+
+                    <h3>
+                        Your Next Steps
+                    </h3>
+
+                </div>
+
+
+                <button class="secondary-btn"
+                        onclick="go('learning-roadmap.html')">
+
+                    Open Roadmap
+
+                </button>
+
+            </div>
+
+
+            <div id="roadmap"
+                 class="roadmap">
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =================================================
+             INTERVIEW HISTORY
+        ================================================== -->
+
+        <section class="panel glass history-panel">
+
+            <div class="section-head">
+
+                <div>
+
+                    <span class="overline">
+                        RECENT ACTIVITY
+                    </span>
+
+                    <h3>
+                        Interview History
+                    </h3>
+
+                </div>
+
+
+                <button class="text-btn"
+                        onclick="go('interview-history.html')">
+
+                    See history →
+
+                </button>
+
+            </div>
+
+
+            <div class="table-wrap">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                Career
+                            </th>
+
+                            <th>
+                                Score
+                            </th>
+
+                            <th>
+                                Questions
+                            </th>
+
+                            <th>
+                                Face Alerts
+                            </th>
+
+                            <th>
+                                Performance
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody id="historyBody">
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =================================================
+             FOOTER
+        ================================================== -->
+
+        <footer>
+
+            AI Career Intelligence
+
+            <span>
+                •
+            </span>
+
+            Personalized by your skills,
+            interests, profile and
+            interview performance
+
+        </footer>
+
+    </main>
+
+
+
+    <!-- =====================================================
+         DASHBOARD JAVASCRIPT
+    ====================================================== -->
+
+    <script src="dashboard.js"></script>
+
+</body>
+</html>

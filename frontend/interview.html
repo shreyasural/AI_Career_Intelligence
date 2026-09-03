@@ -121,6 +121,381 @@
     font-weight: bold;
     margin: 0;
 }
+#careerRecommendations {
+    display: grid;
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.career-card {
+    display: flex;
+    gap: 20px;
+    padding: 22px;
+    border-radius: 18px;
+    background: rgba(255, 255, 255, 0.12);
+    backdrop-filter: blur(10px);
+    transition: 0.3s;
+}
+
+.career-card:hover {
+    transform: translateY(-5px);
+}
+
+.career-number {
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.career-details {
+    flex: 1;
+}
+
+.career-details h3 {
+    margin-top: 0;
+}
+
+.match-text {
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+
+.progress-container {
+    height: 10px;
+    background: rgba(255,255,255,0.2);
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.progress-bar {
+    height: 100%;
+    border-radius: 10px;
+    background: linear-gradient(90deg, #667eea, #764ba2);
+    transition: width 1s ease;
+}
+/* =========================================
+   CAREER READINESS
+========================================= */
+
+.readiness-card {
+    margin: 30px 0;
+    padding: 28px;
+    border-radius: 22px;
+    background: rgba(255, 255, 255, 0.95);
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.12);
+}
+
+.readiness-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+}
+
+.readiness-header h2 {
+    margin: 0;
+    font-size: 26px;
+}
+
+.readiness-header p {
+    margin-top: 6px;
+    color: #666;
+}
+
+.readiness-score {
+    text-align: center;
+    min-width: 110px;
+}
+
+.readiness-score span {
+    display: block;
+    font-size: 32px;
+    font-weight: bold;
+}
+
+.readiness-score small {
+    display: block;
+    margin-top: 4px;
+    font-weight: 600;
+}
+
+.readiness-progress {
+    width: 100%;
+    height: 14px;
+    margin: 25px 0;
+    border-radius: 20px;
+    background: #e9e9e9;
+    overflow: hidden;
+}
+
+#readinessProgress {
+    width: 0%;
+    height: 100%;
+    border-radius: 20px;
+    transition: width 1s ease;
+}
+
+.readiness-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 15px;
+}
+
+.readiness-item {
+    padding: 18px;
+    border-radius: 16px;
+    background: #f7f8fc;
+    text-align: center;
+}
+
+.readiness-item span {
+    display: block;
+    font-size: 14px;
+    margin-bottom: 8px;
+}
+
+.readiness-item strong {
+    font-size: 22px;
+}
+
+@media (max-width: 800px) {
+    .readiness-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .readiness-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}
+/* =========================================
+   CAREER FIT ANALYSIS
+========================================= */
+
+.career-fit-card {
+    margin: 30px 0;
+    padding: 28px;
+    border-radius: 22px;
+    background: rgba(255, 255, 255, 0.95);
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.12);
+}
+
+.career-fit-header h2 {
+    margin: 0;
+    font-size: 26px;
+}
+
+.career-fit-header p {
+    color: #666;
+    margin-top: 6px;
+}
+
+.career-fit-list {
+    display: grid;
+    gap: 18px;
+    margin-top: 25px;
+}
+
+.career-fit-item {
+    padding: 20px;
+    border-radius: 18px;
+    background: #f7f8fc;
+    border: 1px solid #e8e8ee;
+}
+
+.career-fit-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+}
+
+.career-fit-top h3 {
+    margin: 0;
+    font-size: 20px;
+}
+
+.career-fit-score {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.career-fit-level {
+    margin-top: 5px;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.career-fit-progress {
+    width: 100%;
+    height: 10px;
+    margin: 15px 0;
+    background: #e5e5e5;
+    border-radius: 20px;
+    overflow: hidden;
+}
+
+.career-fit-progress-bar {
+    height: 100%;
+    width: 0%;
+    border-radius: 20px;
+    transition: width 1s ease;
+}
+
+.career-skills {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    margin-top: 15px;
+}
+
+.skill-box {
+    padding: 12px;
+    border-radius: 12px;
+    background: white;
+}
+
+.skill-box h4 {
+    margin: 0 0 8px;
+}
+
+.skill-tag {
+    display: inline-block;
+    padding: 5px 9px;
+    margin: 3px;
+    border-radius: 10px;
+    font-size: 12px;
+    background: #eef1ff;
+}
+
+.missing-tag {
+    background: #fff0f0;
+}
+
+@media (max-width: 700px) {
+    .career-skills {
+        grid-template-columns: 1fr;
+    }
+
+    .career-fit-top {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}
+/* =========================================
+   AI CAREER GAP & ACTION PLAN
+========================================= */
+
+.action-plan-card {
+    margin-top: 25px;
+    padding: 28px;
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    box-shadow: 0 10px 35px rgba(0, 0, 0, 0.15);
+}
+
+.action-plan-header {
+    margin-bottom: 25px;
+}
+
+.action-plan-header h2 {
+    margin: 0;
+    font-size: 24px;
+}
+
+.action-plan-header p {
+    margin-top: 7px;
+    opacity: 0.75;
+}
+
+.action-plan-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 18px;
+}
+
+.action-box {
+    padding: 20px;
+    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.07);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.action-box h3 {
+    margin-top: 0;
+    margin-bottom: 12px;
+}
+
+.action-career {
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 20px;
+}
+
+.action-score {
+    font-size: 35px;
+    font-weight: 800;
+}
+
+.action-progress {
+    width: 100%;
+    height: 10px;
+    background: rgba(255,255,255,0.15);
+    border-radius: 10px;
+    overflow: hidden;
+    margin-top: 10px;
+}
+
+.action-progress-bar {
+    height: 100%;
+    width: 0%;
+    border-radius: 10px;
+    transition: width 1s ease;
+}
+
+.action-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.action-tag {
+    padding: 7px 12px;
+    border-radius: 20px;
+    font-size: 13px;
+    background: rgba(255,255,255,0.1);
+}
+
+.action-tag.missing {
+    border: 1px solid rgba(255, 100, 100, 0.4);
+}
+
+.action-tag.priority {
+    border: 1px solid rgba(255, 200, 80, 0.5);
+}
+
+.action-message {
+    line-height: 1.6;
+}
+
+.action-project {
+    font-weight: 600;
+    line-height: 1.6;
+}
+
+.expected-improvement {
+    font-size: 30px;
+    font-weight: 800;
+}
+
+@media (max-width: 768px) {
+
+    .action-plan-grid {
+        grid-template-columns: 1fr;
+    }
+
+}
     </style>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
@@ -256,7 +631,93 @@
 </button>
 
 <div id="interviewHistory"></div>
+<section class="career-intelligence">
 
+    <h2>🎯 Your Career Recommendations</h2>
+
+    <div id="careerRecommendations">
+        <p>Enter your User ID and load your career profile.</p>
+    </div>
+
+</section>
+<!-- CAREER READINESS -->
+<section class="readiness-card">
+
+    <div class="readiness-header">
+        <div>
+            <h2>🎯 Career Readiness</h2>
+            <p>Your overall preparation for your recommended career</p>
+        </div>
+
+        <div class="readiness-score">
+            <span id="readinessScore">0%</span>
+            <small id="readinessLevel">Loading...</small>
+        </div>
+    </div>
+
+    <div class="readiness-progress">
+        <div id="readinessProgress"></div>
+    </div>
+
+    <div class="readiness-grid">
+
+        <div class="readiness-item">
+            <span>💻 Skills</span>
+            <strong id="skillReadiness">0%</strong>
+        </div>
+
+        <div class="readiness-item">
+            <span>🎤 Interview</span>
+            <strong id="interviewReadiness">0%</strong>
+        </div>
+
+        <div class="readiness-item">
+            <span>📚 Learning</span>
+            <strong id="learningReadiness">0%</strong>
+        </div>
+
+        <div class="readiness-item">
+            <span>🚀 Projects</span>
+            <strong id="projectReadiness">0%</strong>
+        </div>
+
+        <div class="readiness-item">
+            <span>👤 Profile</span>
+            <strong id="profileReadiness">0%</strong>
+        </div>
+
+    </div>
+
+</section>
+<!-- CAREER FIT ANALYSIS -->
+<section class="career-fit-card">
+
+    <div class="career-fit-header">
+        <div>
+            <h2>🧠 Career Fit Analysis</h2>
+            <p>See how prepared you are for different career paths.</p>
+        </div>
+    </div>
+
+    <div id="careerFitContainer">
+        <p>Loading career analysis...</p>
+    </div>
+
+</section>
+<section class="action-plan-card">
+
+    <div class="action-plan-header">
+        <div>
+            <h2>🚀 AI Career Gap & Action Plan</h2>
+            <p>Your personalized roadmap to become career-ready.</p>
+        </div>
+    </div>
+
+    <div id="actionPlanContainer">
+        <p>Loading your personalized action plan...</p>
+    </div>
+
+</section>
     <script>
 
         // ==================================================
@@ -401,9 +862,10 @@
                 allImprovements = [];
 
                 faceWarnings = 0;
+                
 
 document.getElementById("warningCount").innerText = "0";
-
+loadCareerRecommendations(userId);
 document.getElementById("faceWarning").innerText = "";
                 // Display career
 
@@ -1733,6 +2195,431 @@ async function downloadPDFReport() {
         alert(
             "Could not download PDF report."
         );
+    }
+}
+async function loadCareerRecommendations(userId) {
+loadCareerReadiness(userId);
+loadCareerFitAnalysis(userId);
+loadCareerGapActionPlan(userId);
+    try {
+        const response = await fetch(
+            `http://127.0.0.1:8000/career-recommendations/${userId}`
+        );
+
+        if (!response.ok) {
+            throw new Error("Failed to load recommendations");
+        }
+
+        const data = await response.json();
+
+        const container =
+            document.getElementById("careerRecommendations");
+
+        container.innerHTML = "";
+
+        data.recommendations.forEach((career, index) => {
+
+            const card = document.createElement("div");
+
+            card.className = "career-card";
+
+            card.innerHTML = `
+                <div class="career-number">
+                    ${index + 1}
+                </div>
+
+                <div class="career-details">
+                    <h3>${career.career}</h3>
+
+                    <div class="match-text">
+                        ${career.match_percentage}% Match
+                    </div>
+
+                    <div class="progress-container">
+                        <div
+                            class="progress-bar"
+                            style="width: ${career.match_percentage}%">
+                        </div>
+                    </div>
+
+                    <p>
+                        <strong>Matched Skills:</strong>
+                        ${
+                            career.matched_skills.length
+                            ? career.matched_skills.join(", ")
+                            : "No matching skills yet"
+                        }
+                    </p>
+                </div>
+            `;
+
+            container.appendChild(card);
+        });
+
+    } catch (error) {
+
+        console.error(error);
+
+        document.getElementById(
+            "careerRecommendations"
+        ).innerHTML =
+            "<p>Unable to load career recommendations.</p>";
+    }
+}
+async function loadCareerReadiness(userId) {
+    try {
+        const response = await fetch(
+            "http://127.0.0.1:8000/career-readiness/" + userId
+        );
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.detail || "Could not load career readiness");
+        }
+
+        console.log("Career Readiness:", data);
+
+        // Score
+        document.getElementById("readinessScore").innerText =
+            data.career_readiness_score + "%";
+
+        // Level
+        document.getElementById("readinessLevel").innerText =
+            data.level;
+const progress =
+    document.getElementById("readinessProgress");
+
+progress.style.width =
+    data.career_readiness_score + "%";
+        // Breakdown
+        document.getElementById("skillReadiness").innerText =
+            data.breakdown.skills + "%";
+
+        document.getElementById("interviewReadiness").innerText =
+            data.breakdown.interview + "%";
+
+        document.getElementById("learningReadiness").innerText =
+            data.breakdown.learning + "%";
+
+        document.getElementById("projectReadiness").innerText =
+            data.breakdown.projects + "%";
+
+        document.getElementById("profileReadiness").innerText =
+            data.breakdown.profile + "%";
+
+    } catch (error) {
+        console.error("Career readiness error:", error);
+    }
+}
+async function loadCareerFitAnalysis(userId) {
+
+    try {
+
+        const response = await fetch(
+            "http://127.0.0.1:8000/career-readiness-analysis/" + userId
+        );
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(
+                data.detail || "Could not load career analysis"
+            );
+        }
+
+        const container =
+            document.getElementById("careerFitContainer");
+
+        container.innerHTML = "";
+
+        const list = document.createElement("div");
+        list.className = "career-fit-list";
+
+        data.career_analysis.forEach((career, index) => {
+
+            const matchedSkills =
+                career.matched_skills || [];
+
+            const missingSkills =
+                career.missing_skills || [];
+
+            const matchedHTML =
+                matchedSkills.length > 0
+                    ? matchedSkills.map(skill =>
+                        `<span class="skill-tag">✓ ${skill}</span>`
+                    ).join("")
+                    : "<span>No matching skills yet</span>";
+
+            const missingHTML =
+                missingSkills.length > 0
+                    ? missingSkills.map(skill =>
+                        `<span class="skill-tag missing-tag">⚠ ${skill}</span>`
+                    ).join("")
+                    : "<span>Excellent! No major skill gaps.</span>";
+
+            const item = document.createElement("div");
+            item.className = "career-fit-item";
+
+            item.innerHTML = `
+                <div class="career-fit-top">
+
+                    <div>
+                        <h3>
+                            ${index === 0 ? "🏆 " : ""}
+                            ${career.career}
+                        </h3>
+
+                        <div class="career-fit-level">
+                            ${career.level}
+                        </div>
+                    </div>
+
+                    <div class="career-fit-score">
+                        ${career.readiness_score}%
+                    </div>
+
+                </div>
+
+                <div class="career-fit-progress">
+                    <div
+                        class="career-fit-progress-bar"
+                        style="width: ${career.readiness_score}%">
+                    </div>
+                </div>
+
+                <div class="career-skills">
+
+                    <div class="skill-box">
+                        <h4>✅ Matched Skills</h4>
+                        ${matchedHTML}
+                    </div>
+
+                    <div class="skill-box">
+                        <h4>⚠️ Skills to Improve</h4>
+                        ${missingHTML}
+                    </div>
+
+                </div>
+            `;
+
+            list.appendChild(item);
+        });
+
+        container.appendChild(list);
+
+    } catch (error) {
+
+        console.error(
+            "Career fit analysis error:",
+            error
+        );
+
+        document.getElementById(
+            "careerFitContainer"
+        ).innerHTML =
+            "<p>Unable to load career analysis.</p>";
+    }
+}
+async function loadCareerGapActionPlan(userId) {
+
+    const container = document.getElementById("actionPlanContainer");
+
+    if (!container) return;
+
+    try {
+
+        const response = await fetch(
+            `http://127.0.0.1:8000/career-gap-action-plan/${userId}`
+        );
+
+        if (!response.ok) {
+            throw new Error("Failed to load career action plan");
+        }
+
+        const data = await response.json();
+
+        const gap = data.career_gap;
+        const interview = data.interview_analysis;
+
+        container.innerHTML = `
+
+            <div class="action-career">
+                🎯 ${data.selected_career}
+            </div>
+
+            <div class="action-plan-grid">
+
+                <!-- Skill Score -->
+                <div class="action-box">
+
+                    <h3>📊 Skill Readiness</h3>
+
+                    <div class="action-score">
+                        ${gap.skill_score}%
+                    </div>
+
+                    <div class="action-progress">
+                        <div
+                            class="action-progress-bar"
+                            style="width:${gap.skill_score}%"
+                        ></div>
+                    </div>
+
+                </div>
+
+
+                <!-- Interview Score -->
+                <div class="action-box">
+
+                    <h3>🎤 Interview Readiness</h3>
+
+                    <div class="action-score">
+                        ${interview.interview_score}%
+                    </div>
+
+                    <div class="action-progress">
+                        <div
+                            class="action-progress-bar"
+                            style="width:${interview.interview_score}%"
+                        ></div>
+                    </div>
+
+                    <p>
+                        Interview Gap:
+                        <strong>${interview.interview_gap}%</strong>
+                    </p>
+
+                </div>
+
+
+                <!-- Strengths -->
+                <div class="action-box">
+
+                    <h3>💪 Your Strengths</h3>
+
+                    <div class="action-tags">
+
+                        ${
+                            gap.matched_skills.length
+                            ? gap.matched_skills.map(skill =>
+                                `<span class="action-tag">
+                                    ✓ ${skill}
+                                </span>`
+                              ).join("")
+                            : "<p>No matched skills yet.</p>"
+                        }
+
+                    </div>
+
+                </div>
+
+
+                <!-- Skill Gaps -->
+                <div class="action-box">
+
+                    <h3>⚠️ Skill Gaps</h3>
+
+                    <div class="action-tags">
+
+                        ${
+                            gap.missing_skills.length
+                            ? gap.missing_skills.map(skill =>
+                                `<span class="action-tag missing">
+                                    ${skill}
+                                </span>`
+                              ).join("")
+                            : "<p>🎉 No major skill gaps!</p>"
+                        }
+
+                    </div>
+
+                </div>
+
+
+                <!-- Priority Learning -->
+                <div class="action-box">
+
+                    <h3>📚 Learn Next</h3>
+
+                    <div class="action-tags">
+
+                        ${
+                            gap.priority_skills.length
+                            ? gap.priority_skills.map(skill =>
+                                `<span class="action-tag priority">
+                                    🔥 ${skill}
+                                </span>`
+                              ).join("")
+                            : "<p>Continue advanced learning.</p>"
+                        }
+
+                    </div>
+
+                </div>
+
+
+                <!-- Recommended Action -->
+                <div class="action-box">
+
+                    <h3>💡 Recommended Action</h3>
+
+                    <p class="action-message">
+                        ${gap.recommended_action}
+                    </p>
+
+                    <hr>
+
+                    <p class="action-message">
+                        🎤 ${interview.recommended_action}
+                    </p>
+
+                </div>
+
+
+                <!-- Project -->
+                <div class="action-box">
+
+                    <h3>🛠️ Recommended Project</h3>
+
+                    <p class="action-project">
+                        ${gap.recommended_project}
+                    </p>
+
+                </div>
+
+
+                <!-- Expected Improvement -->
+                <div class="action-box">
+
+                    <h3>📈 Expected Improvement</h3>
+
+                    <div class="expected-improvement">
+                        ${gap.expected_improvement}%
+                    </div>
+
+                    <p>
+                        Expected skill readiness after focusing
+                        on your priority skills.
+                    </p>
+
+                </div>
+
+            </div>
+        `;
+
+    } catch (error) {
+
+        console.error(
+            "Career action plan error:",
+            error
+        );
+
+        container.innerHTML = `
+            <p>
+                ⚠️ Unable to load career action plan.
+            </p>
+        `;
     }
 }
     </script>

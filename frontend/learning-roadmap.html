@@ -1,0 +1,888 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Learning Roadmap | AI Career Intelligence</title>
+
+    <style>
+        :root {
+            --bg: #070b18;
+            --panel: rgba(18, 24, 45, 0.82);
+            --panel-light: rgba(27, 35, 63, 0.75);
+            --border: rgba(255, 255, 255, 0.08);
+            --text: #f5f7ff;
+            --muted: #8d98b5;
+            --purple: #7c5cff;
+            --blue: #4d8dff;
+            --cyan: #35d6ff;
+            --green: #42e6a4;
+            --pink: #ff5fcf;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background:
+                radial-gradient(circle at 20% 10%, rgba(124, 92, 255, .16), transparent 30%),
+                radial-gradient(circle at 85% 20%, rgba(53, 214, 255, .10), transparent 28%),
+                var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+        }
+
+        /* =========================================
+           SIDEBAR
+        ========================================= */
+
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 245px;
+            height: 100vh;
+            padding: 25px 18px;
+            border-right: 1px solid var(--border);
+            background: rgba(7, 11, 24, .94);
+            backdrop-filter: blur(20px);
+            z-index: 10;
+        }
+
+        .brand {
+            font-size: 19px;
+            font-weight: 800;
+            margin-bottom: 35px;
+            padding: 0 12px;
+        }
+
+        .brand span {
+            color: var(--purple);
+        }
+
+        .profile-mini {
+            background: var(--panel);
+            border: 1px solid var(--border);
+            padding: 15px;
+            border-radius: 16px;
+            margin-bottom: 25px;
+        }
+
+        .profile-mini small {
+            color: var(--muted);
+        }
+
+        .profile-mini strong {
+            display: block;
+            margin-top: 5px;
+        }
+
+        .nav {
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+        }
+
+        .nav-item {
+            display: block;
+            padding: 13px 14px;
+            border-radius: 12px;
+            color: var(--muted);
+            text-decoration: none;
+            transition: .25s;
+        }
+
+        .nav-item:hover {
+            background: rgba(124, 92, 255, .12);
+            color: var(--text);
+        }
+
+        .nav-item.active {
+            background: linear-gradient(
+                135deg,
+                rgba(124, 92, 255, .22),
+                rgba(77, 141, 255, .12)
+            );
+            color: white;
+            border: 1px solid rgba(124, 92, 255, .25);
+        }
+
+        /* =========================================
+           MAIN
+        ========================================= */
+
+        .main {
+            margin-left: 245px;
+            padding: 35px;
+            max-width: 1500px;
+        }
+
+        .topbar {
+            margin-bottom: 30px;
+        }
+
+        .eyebrow {
+            color: var(--cyan);
+            font-size: 12px;
+            font-weight: 800;
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+        }
+
+        .topbar h1 {
+            font-size: 34px;
+            margin-bottom: 8px;
+        }
+
+        .topbar p {
+            color: var(--muted);
+        }
+
+        /* =========================================
+           HERO
+        ========================================= */
+
+        .hero {
+            background:
+                linear-gradient(
+                    135deg,
+                    rgba(124, 92, 255, .20),
+                    rgba(53, 214, 255, .08)
+                ),
+                var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 30px;
+            margin-bottom: 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 25px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, .20);
+        }
+
+        .hero-content {
+            flex: 1;
+        }
+
+        .hero-badge {
+            display: inline-block;
+            padding: 7px 12px;
+            border-radius: 30px;
+            background: rgba(124, 92, 255, .15);
+            color: #b9aaff;
+            font-size: 12px;
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+
+        .hero h2 {
+            font-size: 30px;
+            margin-bottom: 10px;
+        }
+
+        .hero p {
+            color: var(--muted);
+            line-height: 1.7;
+            max-width: 700px;
+        }
+
+        .career-pill {
+            min-width: 230px;
+            text-align: center;
+            padding: 25px;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, .04);
+            border: 1px solid var(--border);
+        }
+
+        .career-pill small {
+            color: var(--muted);
+        }
+
+        .career-pill strong {
+            display: block;
+            font-size: 22px;
+            margin-top: 8px;
+        }
+
+        /* =========================================
+           GRID
+        ========================================= */
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 22px;
+            margin-bottom: 25px;
+        }
+
+        .card {
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, .15);
+        }
+
+        .card.full {
+            grid-column: 1 / -1;
+        }
+
+        .card-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .card-head h2 {
+            font-size: 20px;
+        }
+
+        .overline {
+            color: var(--muted);
+            font-size: 11px;
+            letter-spacing: 1.5px;
+            font-weight: 700;
+        }
+
+        .ai-badge {
+            background: rgba(66, 230, 164, .10);
+            color: var(--green);
+            border: 1px solid rgba(66, 230, 164, .18);
+            padding: 6px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        /* =========================================
+           ROADMAP STAGES
+        ========================================= */
+
+        .roadmap {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+        }
+
+        .stage {
+            position: relative;
+            padding: 20px;
+            background: rgba(255, 255, 255, .035);
+            border: 1px solid var(--border);
+            border-radius: 17px;
+            min-height: 170px;
+        }
+
+        .stage-number {
+            width: 35px;
+            height: 35px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: rgba(124, 92, 255, .16);
+            color: #b9aaff;
+            font-weight: 800;
+            margin-bottom: 15px;
+        }
+
+        .stage h3 {
+            font-size: 16px;
+            margin-bottom: 9px;
+        }
+
+        .stage p {
+            color: var(--muted);
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .stage-status {
+            margin-top: 15px;
+            font-size: 11px;
+            color: var(--cyan);
+            font-weight: 700;
+        }
+
+        /* =========================================
+           SKILLS
+        ========================================= */
+
+        .skill-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .skill-row {
+            padding: 15px;
+            border-radius: 14px;
+            background: rgba(255, 255, 255, .035);
+            border: 1px solid var(--border);
+        }
+
+        .skill-top {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 9px;
+        }
+
+        .skill-top strong {
+            font-size: 14px;
+        }
+
+        .skill-top span {
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        .progress {
+            height: 7px;
+            background: rgba(255, 255, 255, .07);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            width: 0;
+            border-radius: 10px;
+            background: linear-gradient(
+                90deg,
+                var(--purple),
+                var(--cyan)
+            );
+            transition: width 1s ease;
+        }
+
+        /* =========================================
+           TAGS
+        ========================================= */
+
+        .tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 9px;
+        }
+
+        .tag {
+            padding: 9px 13px;
+            border-radius: 30px;
+            background: rgba(124, 92, 255, .10);
+            border: 1px solid rgba(124, 92, 255, .18);
+            color: #c9c0ff;
+            font-size: 12px;
+        }
+
+        /* =========================================
+           PROJECTS
+        ========================================= */
+
+        .project-list {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        .project {
+            padding: 18px;
+            border-radius: 15px;
+            background: rgba(255, 255, 255, .035);
+            border: 1px solid var(--border);
+        }
+
+        .project-icon {
+            font-size: 24px;
+            margin-bottom: 12px;
+        }
+
+        .project h3 {
+            font-size: 15px;
+            margin-bottom: 8px;
+        }
+
+        .project p {
+            color: var(--muted);
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        /* =========================================
+           GOALS
+        ========================================= */
+
+        .goal-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .goal {
+            display: flex;
+            gap: 13px;
+            padding: 14px;
+            border-radius: 14px;
+            background: rgba(255, 255, 255, .035);
+            border: 1px solid var(--border);
+        }
+
+        .goal-icon {
+            font-size: 20px;
+        }
+
+        .goal strong {
+            display: block;
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+
+        .goal span {
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        /* =========================================
+           EMPTY / ERROR
+        ========================================= */
+
+        .loading {
+            color: var(--muted);
+            padding: 20px 0;
+        }
+
+        .error-box {
+            padding: 18px;
+            border-radius: 15px;
+            background: rgba(255, 80, 100, .08);
+            border: 1px solid rgba(255, 80, 100, .2);
+            color: #ff9ba9;
+        }
+
+        /* =========================================
+           RESPONSIVE
+        ========================================= */
+
+        @media (max-width: 1100px) {
+
+            .roadmap {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 850px) {
+
+            .sidebar {
+                position: relative;
+                width: 100%;
+                height: auto;
+            }
+
+            .main {
+                margin-left: 0;
+                padding: 20px;
+            }
+
+            .hero {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .grid {
+                grid-template-columns: 1fr;
+            }
+
+            .card.full {
+                grid-column: auto;
+            }
+        }
+
+        @media (max-width: 600px) {
+
+            .roadmap,
+            .project-list {
+                grid-template-columns: 1fr;
+            }
+
+            .topbar h1 {
+                font-size: 26px;
+            }
+        }
+    </style>
+</head>
+
+
+<body>
+
+    <!-- =========================================
+         SIDEBAR
+    ========================================== -->
+
+    <aside class="sidebar">
+
+        <div class="brand">
+            AI <span>Career Intelligence</span>
+        </div>
+
+
+        <div class="profile-mini">
+
+            <small>USER ID</small>
+
+            <strong id="sidebarUser">
+                Loading...
+            </strong>
+
+        </div>
+
+
+        <nav class="nav">
+
+            <a
+                href="dashboard.html"
+                class="nav-item"
+            >
+                📊 Dashboard
+            </a>
+
+
+            <a
+                href="career-analysis.html"
+                class="nav-item"
+            >
+                🎯 Career Analysis
+            </a>
+
+
+            <a
+                href="learning-roadmap.html"
+                class="nav-item active"
+            >
+                🗺️ Learning Roadmap
+            </a>
+
+
+            <a
+                href="interview.html"
+                class="nav-item"
+            >
+                🎤 Mock Interview
+            </a>
+
+
+            <a
+                href="interview-history.html"
+                class="nav-item"
+            >
+                📜 Interview History
+            </a>
+
+
+            <a
+                href="profile.html"
+                class="nav-item"
+            >
+                👤 My Profile
+            </a>
+
+        </nav>
+
+    </aside>
+
+
+    <!-- =========================================
+         MAIN
+    ========================================== -->
+
+    <main class="main">
+
+        <div class="topbar">
+
+            <div class="eyebrow">
+                AI CAREER INTELLIGENCE
+            </div>
+
+            <h1>
+                Personalized Learning Roadmap
+            </h1>
+
+            <p>
+                A step-by-step learning path generated from your career profile,
+                skills and identified gaps.
+            </p>
+
+        </div>
+
+
+        <!-- =====================================
+             HERO
+        ====================================== -->
+
+        <section class="hero">
+
+            <div class="hero-content">
+
+                <span class="hero-badge">
+                    ✨ AI-PERSONALIZED ROADMAP
+                </span>
+
+                <h2 id="roadmapTitle">
+                    Building your roadmap...
+                </h2>
+
+                <p id="roadmapDescription">
+                    Analyzing your career profile and creating a personalized
+                    learning journey.
+                </p>
+
+            </div>
+
+
+            <div class="career-pill">
+
+                <small>
+                    TARGET CAREER
+                </small>
+
+                <strong id="targetCareer">
+                    --
+                </strong>
+
+            </div>
+
+        </section>
+
+
+        <!-- =====================================
+             ROADMAP
+        ====================================== -->
+
+        <div class="grid">
+
+            <section class="card full">
+
+                <div class="card-head">
+
+                    <div>
+                        <span class="overline">
+                            LEARNING JOURNEY
+                        </span>
+
+                        <h2>
+                            Your Career Roadmap
+                        </h2>
+                    </div>
+
+                    <span class="ai-badge">
+                        AI GENERATED
+                    </span>
+
+                </div>
+
+
+                <div
+                    class="roadmap"
+                    id="roadmapStages"
+                >
+
+                    <div class="loading">
+                        Creating roadmap...
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- =================================
+                 SKILLS TO LEARN
+            ================================== -->
+
+            <section class="card">
+
+                <div class="card-head">
+
+                    <div>
+                        <span class="overline">
+                            SKILL DEVELOPMENT
+                        </span>
+
+                        <h2>
+                            Skills to Learn
+                        </h2>
+                    </div>
+
+                </div>
+
+
+                <div
+                    class="skill-list"
+                    id="skillsToLearn"
+                >
+
+                    <div class="loading">
+                        Loading skills...
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- =================================
+                 PRIORITY SKILLS
+            ================================== -->
+
+            <section class="card">
+
+                <div class="card-head">
+
+                    <div>
+                        <span class="overline">
+                            PRIORITY
+                        </span>
+
+                        <h2>
+                            High-Impact Skills
+                        </h2>
+                    </div>
+
+                </div>
+
+
+                <div
+                    class="tags"
+                    id="prioritySkills"
+                >
+
+                    <span class="loading">
+                        Analyzing skill gaps...
+                    </span>
+
+                </div>
+
+            </section>
+
+
+            <!-- =================================
+                 PROJECTS
+            ================================== -->
+
+            <section class="card">
+
+                <div class="card-head">
+
+                    <div>
+                        <span class="overline">
+                            PRACTICAL EXPERIENCE
+                        </span>
+
+                        <h2>
+                            Recommended Projects
+                        </h2>
+                    </div>
+
+                </div>
+
+
+                <div
+                    class="project-list"
+                    id="projects"
+                >
+
+                    <div class="loading">
+                        Generating project ideas...
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- =================================
+                 GOALS
+            ================================== -->
+
+            <section class="card">
+
+                <div class="card-head">
+
+                    <div>
+                        <span class="overline">
+                            CAREER PROGRESSION
+                        </span>
+
+                        <h2>
+                            Recommended Goals
+                        </h2>
+                    </div>
+
+                </div>
+
+
+                <div
+                    class="goal-list"
+                    id="goals"
+                >
+
+                    <div class="loading">
+                        Creating career goals...
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- =================================
+                 TECHNOLOGIES
+            ================================== -->
+
+            <section class="card full">
+
+                <div class="card-head">
+
+                    <div>
+                        <span class="overline">
+                            TECHNOLOGY STACK
+                        </span>
+
+                        <h2>
+                            Technologies to Explore
+                        </h2>
+                    </div>
+
+                </div>
+
+
+                <div
+                    class="tags"
+                    id="technologies"
+                >
+
+                    <span class="loading">
+                        Loading technologies...
+                    </span>
+
+                </div>
+
+            </section>
+
+        </div>
+
+    </main>
+
+
+    <script src="learning-roadmap.js"></script>
+
+</body>
+
+</html>

@@ -1,2170 +1,2090 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>AI Mock Interview</title>
+    <title>AI Mock Interview | AI Career Intelligence</title>
 
     <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
         body {
-            font-family: Arial, sans-serif;
-            max-width: 700px;
-            margin: 50px auto;
-            padding: 20px;
+            font-family: "Segoe UI", Arial, sans-serif;
+            background:
+                radial-gradient(circle at top left, #312e81 0%, transparent 35%),
+                radial-gradient(circle at bottom right, #581c87 0%, transparent 35%),
+                #080b18;
+            color: #f8fafc;
+            min-height: 100vh;
+        }
+
+        button,
+        input {
+            font: inherit;
         }
 
         button {
-            padding: 12px 20px;
-            margin: 5px;
             cursor: pointer;
+        }
+
+        .page {
+            width: 100%;
+            max-width: 1450px;
+            margin: auto;
+            padding: 25px;
+        }
+
+        /* ================= HEADER ================= */
+
+        .top-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .brand h1 {
+            font-size: 30px;
+            font-weight: 800;
+            background: linear-gradient(90deg, #a78bfa, #60a5fa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .brand p {
+            color: #94a3b8;
+            margin-top: 5px;
+        }
+
+        .user-box {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .user-box input {
+            width: 100px;
+            padding: 12px 14px;
+            border: 1px solid #334155;
+            background: rgba(15, 23, 42, 0.8);
+            color: white;
+            border-radius: 10px;
+            outline: none;
+        }
+
+        /* ================= CARDS ================= */
+
+        .card {
+            background: rgba(15, 23, 42, 0.75);
+            border: 1px solid rgba(148, 163, 184, 0.15);
+            backdrop-filter: blur(18px);
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 22px;
+            box-shadow: 0 15px 45px rgba(0, 0, 0, 0.25);
+        }
+
+        .card-title {
+            font-size: 19px;
+            font-weight: 700;
+            margin-bottom: 18px;
+        }
+
+        /* ================= BUTTONS ================= */
+
+        .btn {
             border: none;
-            border-radius: 5px;
-            background: #333;
+            border-radius: 11px;
+            padding: 12px 18px;
+            font-weight: 700;
+            transition: 0.2s ease;
             color: white;
         }
 
-        button:disabled {
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #7c3aed, #2563eb);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #059669, #10b981);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #dc2626, #ef4444);
+        }
+
+        .btn-secondary {
+            background: #1e293b;
+            border: 1px solid #334155;
+        }
+
+        .btn-warning {
+            background: linear-gradient(135deg, #d97706, #f59e0b);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
             cursor: not-allowed;
-            opacity: 0.6;
+            transform: none;
         }
 
-        input {
-            padding: 10px;
-            width: 80px;
+        /* ================= CAREER HEADER ================= */
+
+        .career-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
         }
 
-        #career {
-            font-weight: bold;
-            color: #333;
+        .career-name {
+            font-size: 27px;
+            font-weight: 800;
+            margin-top: 5px;
         }
 
-        #status {
-            margin-top: 20px;
-            font-weight: bold;
+        .badge {
+            display: inline-block;
+            padding: 7px 13px;
+            border-radius: 30px;
+            background: rgba(124, 58, 237, 0.18);
+            color: #c4b5fd;
+            border: 1px solid rgba(167, 139, 250, 0.3);
+            font-size: 13px;
+            font-weight: 700;
         }
 
-        #question {
-            padding: 15px;
-            background: #f5f5f5;
-            border-radius: 5px;
-            min-height: 30px;
+        .question-counter {
+            font-size: 16px;
+            color: #94a3b8;
+            font-weight: 600;
         }
 
-        #answer {
-            padding: 15px;
-            border: 1px solid #ccc;
-            min-height: 50px;
-            margin-top: 10px;
-            border-radius: 5px;
+        /* ================= INTERVIEW GRID ================= */
+
+        .interview-grid {
+            display: grid;
+            grid-template-columns: 0.9fr 1.1fr;
+            gap: 22px;
         }
 
-        #evaluation {
-            margin-top: 25px;
-            padding: 15px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
+        /* ================= CAMERA ================= */
+
+        .camera-container {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 16 / 10;
+            background: #020617;
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid #334155;
         }
 
-        #finalResult {
-            margin-top: 25px;
-            padding: 20px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
+        #camera {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
         }
 
-        #nextBtn {
+        .camera-overlay {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            right: 15px;
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        .status-pill {
+            padding: 7px 11px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+            background: rgba(2, 6, 23, 0.8);
+            border: 1px solid #334155;
+        }
+
+        .face-status {
+            color: #86efac;
+        }
+
+        .warning-status {
+            color: #fbbf24;
+        }
+
+        .camera-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 15px;
+        }
+
+        /* ================= QUESTION ================= */
+
+        .question-number {
+            color: #a78bfa;
+            font-size: 14px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .question-box {
+            background: rgba(30, 41, 59, 0.65);
+            border: 1px solid #334155;
+            border-radius: 16px;
+            padding: 25px;
+            min-height: 150px;
+            display: flex;
+            align-items: center;
+        }
+
+        .question-text {
+            font-size: 22px;
+            line-height: 1.6;
+            font-weight: 600;
+        }
+
+        .question-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 16px;
+            flex-wrap: wrap;
+        }
+
+        /* ================= ANSWER ================= */
+
+        .answer-box {
+            margin-top: 22px;
+        }
+
+        .answer-label {
+            color: #cbd5e1;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        #answerText {
+            width: 100%;
+            min-height: 150px;
+            resize: vertical;
+            padding: 16px;
+            border-radius: 14px;
+            border: 1px solid #334155;
+            background: rgba(2, 6, 23, 0.7);
+            color: white;
+            outline: none;
+            line-height: 1.6;
+        }
+
+        #answerText:focus {
+            border-color: #8b5cf6;
+            box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.12);
+        }
+
+        .answer-status {
+            margin-top: 8px;
+            font-size: 13px;
+            color: #94a3b8;
+        }
+
+        .answer-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 14px;
+            flex-wrap: wrap;
+        }
+
+        /* ================= EVALUATION ================= */
+
+        .evaluation-card {
             display: none;
+            margin-top: 22px;
+            border: 1px solid rgba(16, 185, 129, 0.25);
+            background: rgba(6, 78, 59, 0.15);
         }
 
-        #voiceStatus {
-            margin-top: 10px;
-            font-weight: bold;
+        .evaluation-card.show {
+            display: block;
         }
-        .history-card {
-    border: 1px solid #ddd;
-    border-radius: 10px;
-    padding: 15px;
-    margin: 15px 0;
-    background: #f8f9fa;
-}
-
-.history-card h3 {
-    margin-top: 0;
-}
-
-.history-card p {
-    margin: 8px 0;
-}
-.dashboard {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 15px;
-    margin: 20px 0;
-}
-
-.stat-card {
-    border: 1px solid #ddd;
-    border-radius: 10px;
-    padding: 15px;
-    text-align: center;
-    background: #f8f9fa;
-}
-
-.stat-card h3 {
-    margin-bottom: 10px;
-}
-
-.stat-card p {
-    font-size: 24px;
-    font-weight: bold;
-    margin: 0;
-}
-#careerRecommendations {
-    display: grid;
-    gap: 20px;
-    margin-top: 20px;
-}
-
-.career-card {
-    display: flex;
-    gap: 20px;
-    padding: 22px;
-    border-radius: 18px;
-    background: rgba(255, 255, 255, 0.12);
-    backdrop-filter: blur(10px);
-    transition: 0.3s;
-}
-
-.career-card:hover {
-    transform: translateY(-5px);
-}
-
-.career-number {
-    font-size: 28px;
-    font-weight: bold;
-}
-
-.career-details {
-    flex: 1;
-}
-
-.career-details h3 {
-    margin-top: 0;
-}
-
-.match-text {
-    font-weight: bold;
-    margin-bottom: 8px;
-}
-
-.progress-container {
-    height: 10px;
-    background: rgba(255,255,255,0.2);
-    border-radius: 10px;
-    overflow: hidden;
-}
-
-.progress-bar {
-    height: 100%;
-    border-radius: 10px;
-    background: linear-gradient(90deg, #667eea, #764ba2);
-    transition: width 1s ease;
-}
-/* =========================================
-   CAREER READINESS
-========================================= */
-
-.readiness-card {
-    margin: 30px 0;
-    padding: 28px;
-    border-radius: 22px;
-    background: rgba(255, 255, 255, 0.95);
-    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.12);
-}
-
-.readiness-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 20px;
-}
-
-.readiness-header h2 {
-    margin: 0;
-    font-size: 26px;
-}
-
-.readiness-header p {
-    margin-top: 6px;
-    color: #666;
-}
-
-.readiness-score {
-    text-align: center;
-    min-width: 110px;
-}
-
-.readiness-score span {
-    display: block;
-    font-size: 32px;
-    font-weight: bold;
-}
-
-.readiness-score small {
-    display: block;
-    margin-top: 4px;
-    font-weight: 600;
-}
-
-.readiness-progress {
-    width: 100%;
-    height: 14px;
-    margin: 25px 0;
-    border-radius: 20px;
-    background: #e9e9e9;
-    overflow: hidden;
-}
-
-#readinessProgress {
-    width: 0%;
-    height: 100%;
-    border-radius: 20px;
-    transition: width 1s ease;
-}
-
-.readiness-grid {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    gap: 15px;
-}
-
-.readiness-item {
-    padding: 18px;
-    border-radius: 16px;
-    background: #f7f8fc;
-    text-align: center;
-}
-
-.readiness-item span {
-    display: block;
-    font-size: 14px;
-    margin-bottom: 8px;
-}
-
-.readiness-item strong {
-    font-size: 22px;
-}
-
-@media (max-width: 800px) {
-    .readiness-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
-
-    .readiness-header {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-}
-/* =========================================
-   CAREER FIT ANALYSIS
-========================================= */
-
-.career-fit-card {
-    margin: 30px 0;
-    padding: 28px;
-    border-radius: 22px;
-    background: rgba(255, 255, 255, 0.95);
-    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.12);
-}
-
-.career-fit-header h2 {
-    margin: 0;
-    font-size: 26px;
-}
-
-.career-fit-header p {
-    color: #666;
-    margin-top: 6px;
-}
-
-.career-fit-list {
-    display: grid;
-    gap: 18px;
-    margin-top: 25px;
-}
-
-.career-fit-item {
-    padding: 20px;
-    border-radius: 18px;
-    background: #f7f8fc;
-    border: 1px solid #e8e8ee;
-}
-
-.career-fit-top {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 15px;
-}
-
-.career-fit-top h3 {
-    margin: 0;
-    font-size: 20px;
-}
-
-.career-fit-score {
-    font-size: 24px;
-    font-weight: bold;
-}
-
-.career-fit-level {
-    margin-top: 5px;
-    font-size: 14px;
-    font-weight: 600;
-}
-
-.career-fit-progress {
-    width: 100%;
-    height: 10px;
-    margin: 15px 0;
-    background: #e5e5e5;
-    border-radius: 20px;
-    overflow: hidden;
-}
-
-.career-fit-progress-bar {
-    height: 100%;
-    width: 0%;
-    border-radius: 20px;
-    transition: width 1s ease;
-}
-
-.career-skills {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 15px;
-    margin-top: 15px;
-}
-
-.skill-box {
-    padding: 12px;
-    border-radius: 12px;
-    background: white;
-}
-
-.skill-box h4 {
-    margin: 0 0 8px;
-}
-
-.skill-tag {
-    display: inline-block;
-    padding: 5px 9px;
-    margin: 3px;
-    border-radius: 10px;
-    font-size: 12px;
-    background: #eef1ff;
-}
-
-.missing-tag {
-    background: #fff0f0;
-}
-
-@media (max-width: 700px) {
-    .career-skills {
-        grid-template-columns: 1fr;
-    }
-
-    .career-fit-top {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-}
-/* =========================================
-   AI CAREER GAP & ACTION PLAN
-========================================= */
-
-.action-plan-card {
-    margin-top: 25px;
-    padding: 28px;
-    border-radius: 20px;
-    background: rgba(255, 255, 255, 0.08);
-    backdrop-filter: blur(15px);
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    box-shadow: 0 10px 35px rgba(0, 0, 0, 0.15);
-}
-
-.action-plan-header {
-    margin-bottom: 25px;
-}
-
-.action-plan-header h2 {
-    margin: 0;
-    font-size: 24px;
-}
-
-.action-plan-header p {
-    margin-top: 7px;
-    opacity: 0.75;
-}
-
-.action-plan-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 18px;
-}
-
-.action-box {
-    padding: 20px;
-    border-radius: 16px;
-    background: rgba(255, 255, 255, 0.07);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.action-box h3 {
-    margin-top: 0;
-    margin-bottom: 12px;
-}
-
-.action-career {
-    font-size: 28px;
-    font-weight: 700;
-    margin-bottom: 20px;
-}
-
-.action-score {
-    font-size: 35px;
-    font-weight: 800;
-}
-
-.action-progress {
-    width: 100%;
-    height: 10px;
-    background: rgba(255,255,255,0.15);
-    border-radius: 10px;
-    overflow: hidden;
-    margin-top: 10px;
-}
-
-.action-progress-bar {
-    height: 100%;
-    width: 0%;
-    border-radius: 10px;
-    transition: width 1s ease;
-}
-
-.action-tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-}
-
-.action-tag {
-    padding: 7px 12px;
-    border-radius: 20px;
-    font-size: 13px;
-    background: rgba(255,255,255,0.1);
-}
-
-.action-tag.missing {
-    border: 1px solid rgba(255, 100, 100, 0.4);
-}
-
-.action-tag.priority {
-    border: 1px solid rgba(255, 200, 80, 0.5);
-}
-
-.action-message {
-    line-height: 1.6;
-}
-
-.action-project {
-    font-weight: 600;
-    line-height: 1.6;
-}
-
-.expected-improvement {
-    font-size: 30px;
-    font-weight: 800;
-}
-
-@media (max-width: 768px) {
-
-    .action-plan-grid {
-        grid-template-columns: 1fr;
-    }
-
-}
+
+        .score-display {
+            font-size: 44px;
+            font-weight: 800;
+            color: #86efac;
+            margin-bottom: 12px;
+        }
+
+        .feedback {
+            color: #cbd5e1;
+            line-height: 1.6;
+            margin-bottom: 18px;
+        }
+
+        .evaluation-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .evaluation-box {
+            background: rgba(15, 23, 42, 0.7);
+            border-radius: 14px;
+            padding: 16px;
+        }
+
+        .evaluation-box h4 {
+            margin-bottom: 10px;
+        }
+
+        .evaluation-box ul {
+            padding-left: 20px;
+            color: #cbd5e1;
+            line-height: 1.7;
+        }
+
+        /* ================= INTERVIEW CONTROLS ================= */
+
+        .main-controls {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+
+        /* ================= FINAL RESULT ================= */
+
+        .final-result {
+            display: none;
+            text-align: center;
+            border: 1px solid rgba(167, 139, 250, 0.3);
+            background:
+                radial-gradient(circle at top, rgba(124, 58, 237, 0.15), transparent 50%),
+                rgba(15, 23, 42, 0.8);
+        }
+
+        .final-result.show {
+            display: block;
+        }
+
+        .final-icon {
+            font-size: 55px;
+            margin-bottom: 10px;
+        }
+
+        .final-result h2 {
+            font-size: 30px;
+            margin-bottom: 10px;
+        }
+
+        .final-score {
+            font-size: 58px;
+            font-weight: 900;
+            background: linear-gradient(90deg, #a78bfa, #60a5fa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin: 10px 0 20px;
+        }
+
+        .final-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .final-stat {
+            background: rgba(30, 41, 59, 0.7);
+            border-radius: 15px;
+            padding: 18px;
+        }
+
+        .final-stat-value {
+            font-size: 26px;
+            font-weight: 800;
+            margin-bottom: 5px;
+        }
+
+        .final-stat-label {
+            color: #94a3b8;
+            font-size: 13px;
+        }
+
+        .final-feedback-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            text-align: left;
+            margin-top: 22px;
+        }
+
+        .final-feedback-box {
+            padding: 18px;
+            border-radius: 15px;
+            background: rgba(30, 41, 59, 0.65);
+        }
+
+        .final-feedback-box h3 {
+            margin-bottom: 10px;
+        }
+
+        .final-feedback-box ul {
+            padding-left: 20px;
+            color: #cbd5e1;
+            line-height: 1.7;
+        }
+
+        .report-buttons {
+            margin-top: 25px;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        /* ================= ALERT ================= */
+
+        #message {
+            display: none;
+            padding: 14px 17px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            background: rgba(127, 29, 29, 0.25);
+            border: 1px solid rgba(248, 113, 113, 0.3);
+            color: #fecaca;
+        }
+
+        #message.show {
+            display: block;
+        }
+
+        /* ================= RESPONSIVE ================= */
+
+        @media (max-width: 950px) {
+            .interview-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .top-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+
+        @media (max-width: 650px) {
+            .page {
+                padding: 15px;
+            }
+
+            .career-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .evaluation-grid,
+            .final-feedback-grid,
+            .final-stats {
+                grid-template-columns: 1fr;
+            }
+
+            .question-text {
+                font-size: 18px;
+            }
+
+            .brand h1 {
+                font-size: 24px;
+            }
+        }
     </style>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
 <body>
 
-    <h1>🎤 AI Mock Interview</h1>
+<div class="page">
 
-    <!-- USER ID -->
-    <label for="userIdInput">User ID:</label>
+    <!-- ================= HEADER ================= -->
 
-    <input
-        type="number"
-        id="userIdInput"
-        value="1"
-        min="1"
+    <header class="top-header">
+
+        <div class="brand">
+            <h1>🎤 AI Mock Interview</h1>
+            <p>Practice. Perform. Improve.</p>
+        </div>
+
+        <div class="user-box">
+            <input
+                type="number"
+                id="userIdInput"
+                min="1"
+                placeholder="User ID"
+            >
+
+            <button class="btn btn-primary" onclick="loadInterview()">
+                Load Interview
+            </button>
+        </div>
+
+    </header>
+
+
+    <!-- ================= MESSAGE ================= -->
+
+    <div id="message"></div>
+
+
+    <!-- ================= CAREER ================= -->
+
+    <section class="card">
+
+        <div class="career-header">
+
+            <div>
+                <span class="badge">AI GENERATED INTERVIEW</span>
+
+                <div class="career-name" id="careerName">
+                    Loading Career...
+                </div>
+            </div>
+
+            <div class="question-counter" id="questionCounter">
+                Question 0 of 0
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ================= MAIN INTERVIEW ================= -->
+
+    <section class="interview-grid">
+
+        <!-- CAMERA -->
+
+        <div class="card">
+
+            <div class="card-title">
+                📹 Interview Monitoring
+            </div>
+
+            <div class="camera-container">
+
+                <video
+                    id="camera"
+                    autoplay
+                    muted
+                    playsinline
+                ></video>
+
+                <div class="camera-overlay">
+
+                    <div
+                        class="status-pill face-status"
+                        id="faceStatus"
+                    >
+                        ● Face: Not Checked
+                    </div>
+
+                    <div
+                        class="status-pill warning-status"
+                        id="warningStatus"
+                    >
+                        Warnings: 0
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="camera-buttons">
+
+                <button
+                    class="btn btn-success"
+                    onclick="startCamera()"
+                >
+                    📹 Start Camera
+                </button>
+
+                <button
+                    class="btn btn-warning"
+                    onclick="checkFace()"
+                >
+                    👤 Detect Face
+                </button>
+
+                <button
+                    class="btn btn-secondary"
+                    onclick="stopCamera()"
+                >
+                    ⏹ Stop Camera
+                </button>
+
+            </div>
+
+
+            <div class="main-controls">
+
+                <button
+                    class="btn btn-primary"
+                    onclick="startInterview()"
+                >
+                    🎤 Start Interview
+                </button>
+
+                <button
+                    class="btn btn-danger"
+                    onclick="finishInterview()"
+                >
+                    🛑 Finish Interview
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <!-- QUESTION / ANSWER -->
+
+        <div class="card">
+
+            <div class="card-title">
+                💬 Interview Question
+            </div>
+
+            <div class="question-number" id="questionNumber">
+                QUESTION 1
+            </div>
+
+            <div class="question-box">
+
+                <div
+                    class="question-text"
+                    id="questionText"
+                >
+                    Click "Load Interview" to begin.
+                </div>
+
+            </div>
+
+
+            <div class="question-actions">
+
+                <button
+                    class="btn btn-secondary"
+                    onclick="speakQuestion()"
+                >
+                    🔊 Speak Question
+                </button>
+
+            </div>
+
+
+            <!-- ANSWER -->
+
+            <div class="answer-box">
+
+                <div class="answer-label">
+                    🎙️ Your Answer
+                </div>
+
+                <textarea
+                    id="answerText"
+                    placeholder="Your spoken answer will appear here..."
+                ></textarea>
+
+                <div
+                    class="answer-status"
+                    id="answerStatus"
+                >
+                    Ready to record your answer.
+                </div>
+
+
+                <div class="answer-buttons">
+
+                    <button
+                        class="btn btn-success"
+                        onclick="startAnswer()"
+                    >
+                        🎙 Start Answer
+                    </button>
+
+                    <button
+                        class="btn btn-danger"
+                        onclick="stopAnswer()"
+                    >
+                        ⏹ Stop Answer
+                    </button>
+
+                    <button
+                        class="btn btn-primary"
+                        onclick="submitAnswer()"
+                    >
+                        🚀 Submit Answer
+                    </button>
+
+                    <button
+                        class="btn btn-secondary"
+                        onclick="nextQuestion()"
+                    >
+                        Next →
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <!-- EVALUATION -->
+
+            <div
+                class="card evaluation-card"
+                id="evaluationCard"
+            >
+
+                <div class="card-title">
+                    🤖 AI Evaluation
+                </div>
+
+                <div
+                    class="score-display"
+                    id="evaluationScore"
+                >
+                    0/10
+                </div>
+
+                <div
+                    class="feedback"
+                    id="evaluationFeedback"
+                ></div>
+
+
+                <div class="evaluation-grid">
+
+                    <div class="evaluation-box">
+
+                        <h4>💪 Strengths</h4>
+
+                        <ul id="strengthsList"></ul>
+
+                    </div>
+
+
+                    <div class="evaluation-box">
+
+                        <h4>🎯 Areas to Improve</h4>
+
+                        <ul id="improvementsList"></ul>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ================= FINAL RESULT ================= -->
+
+    <section
+        class="card final-result"
+        id="finalResult"
     >
 
-    <button id="loadBtn">
-        🔄 Load Interview
-    </button>
-<h2>Face Detection</h2>
+        <div class="final-icon">
+            🏆
+        </div>
 
-<video id="camera" width="400" height="300" autoplay></video>
+        <h2>
+            Interview Completed!
+        </h2>
 
-<p id="faceStatus">Camera not started</p>
-<p id="monitorStatus">Interview monitoring: OFF</p>
-<p id="faceWarning"></p>
-<p>Face warnings: <span id="warningCount">0</span></p>
-<button onclick="startInterview()">🎤 Start Interview</button>
-<button onclick="startCamera()">Start Camera</button>
-<button onclick="checkFace()">Detect Face</button>
-<button onclick="stopInterview()">Stop Interview</button>
-    <!-- CAREER -->
-    <p>
-        <strong>Career:</strong>
-        <span id="career">Loading...</span>
-    </p>
+        <p style="color:#94a3b8;">
+            Here's your overall interview performance.
+        </p>
 
-    <!-- QUESTION NUMBER -->
-    <h3>
-        Question
-        <span id="questionNumber">1</span>
-        of
-        <span id="totalQuestions">5</span>
-    </h3>
+        <div
+            class="final-score"
+            id="finalScore"
+        >
+            0/10
+        </div>
 
-    <!-- QUESTION -->
-    <p id="question">
-        Loading interview question...
-    </p>
 
-    <!-- SPEAK QUESTION -->
-    <button id="speakBtn">
-        🔊 Speak Question
-    </button>
+        <div class="final-stats">
 
-    <p id="voiceStatus"></p>
+            <div class="final-stat">
 
-    <!-- ANSWER BUTTONS -->
-    <br>
+                <div
+                    class="final-stat-value"
+                    id="finalQuestions"
+                >
+                    0
+                </div>
 
-    <button id="startBtn">
-        🎤 Start Answer
-    </button>
+                <div class="final-stat-label">
+                    Questions Answered
+                </div>
 
-    <button id="stopBtn" disabled>
-        ⏹ Stop
-    </button>
+            </div>
 
-    <!-- STATUS -->
-    <p id="status">
-        Status: Loading interview...
-    </p>
 
-    <!-- ANSWER -->
-    <h3>Your Answer:</h3>
+            <div class="final-stat">
 
-    <div id="answer">
-        Your spoken answer will appear here...
-    </div>
+                <div
+                    class="final-stat-value"
+                    id="finalWarnings"
+                >
+                    0
+                </div>
 
-    <!-- SUBMIT -->
-    <button id="submitBtn">
-        📤 Submit Answer
-    </button>
+                <div class="final-stat-label">
+                    Face Warnings
+                </div>
 
-    <!-- NEXT -->
-    <button id="nextBtn">
-        ➡️ Next Question
-    </button>
+            </div>
 
-    <!-- EVALUATION -->
-    <div id="evaluation"></div>
 
-    <!-- FINAL RESULT -->
-    <div id="finalResult"></div>
-    <button id="downloadReportBtn" onclick="downloadPDFReport()">
-    📄 Download PDF Report
-</button>
-<h2>📊 Performance Dashboard</h2>
+            <div class="final-stat">
 
-<div class="dashboard">
+                <div
+                    class="final-stat-value"
+                    id="finalCareer"
+                >
+                    -
+                </div>
 
-    <div class="stat-card">
-        <h3>Total Interviews</h3>
-        <p id="totalInterviews">0</p>
-    </div>
+                <div class="final-stat-label">
+                    Career
+                </div>
 
-    <div class="stat-card">
-        <h3>Average Score</h3>
-        <p id="overallAverage">0.0</p>
-    </div>
+            </div>
 
-    <div class="stat-card">
-        <h3>Best Score</h3>
-        <p id="bestScore">0.0</p>
-    </div>
+        </div>
 
-    <div class="stat-card">
-        <h3>Face Warnings</h3>
-        <p id="totalWarnings">0</p>
-    </div>
+
+        <div class="final-feedback-grid">
+
+            <div class="final-feedback-box">
+
+                <h3>💪 Your Strengths</h3>
+
+                <ul id="finalStrengths"></ul>
+
+            </div>
+
+
+            <div class="final-feedback-box">
+
+                <h3>🎯 Areas to Improve</h3>
+
+                <ul id="finalImprovements"></ul>
+
+            </div>
+
+        </div>
+
+
+        <div class="report-buttons">
+
+            <button
+                class="btn btn-primary"
+                onclick="downloadPDFReport()"
+            >
+                📄 Download PDF Report
+            </button>
+
+            <button
+                class="btn btn-secondary"
+                onclick="downloadInterviewReport()"
+            >
+                📝 Download Text Report
+            </button>
+
+            <button
+                class="btn btn-success"
+                onclick="restartInterview()"
+            >
+                🔄 Take Another Interview
+            </button>
+
+        </div>
+
+    </section>
 
 </div>
-<h2>📈 Interview Performance</h2>
-
-<canvas id="performanceChart" width="700" height="300"></canvas>
-    <h2>📚 Interview History</h2>
-
-<button onclick="loadInterviewHistory()">
-    View Interview History
-</button>
 
-<div id="interviewHistory"></div>
-<section class="career-intelligence">
 
-    <h2>🎯 Your Career Recommendations</h2>
+<script>
 
-    <div id="careerRecommendations">
-        <p>Enter your User ID and load your career profile.</p>
-    </div>
+    /* =========================================================
+       CONFIGURATION
+    ========================================================= */
 
-</section>
-<!-- CAREER READINESS -->
-<section class="readiness-card">
+    const API_BASE = "http://127.0.0.1:8000";
 
-    <div class="readiness-header">
-        <div>
-            <h2>🎯 Career Readiness</h2>
-            <p>Your overall preparation for your recommended career</p>
-        </div>
 
-        <div class="readiness-score">
-            <span id="readinessScore">0%</span>
-            <small id="readinessLevel">Loading...</small>
-        </div>
-    </div>
+    /* =========================================================
+       STATE
+    ========================================================= */
 
-    <div class="readiness-progress">
-        <div id="readinessProgress"></div>
-    </div>
+    let userId = 1;
 
-    <div class="readiness-grid">
+    let career = "";
 
-        <div class="readiness-item">
-            <span>💻 Skills</span>
-            <strong id="skillReadiness">0%</strong>
-        </div>
+    let questions = [];
 
-        <div class="readiness-item">
-            <span>🎤 Interview</span>
-            <strong id="interviewReadiness">0%</strong>
-        </div>
+    let currentQuestionIndex = 0;
 
-        <div class="readiness-item">
-            <span>📚 Learning</span>
-            <strong id="learningReadiness">0%</strong>
-        </div>
+    let scores = [];
 
-        <div class="readiness-item">
-            <span>🚀 Projects</span>
-            <strong id="projectReadiness">0%</strong>
-        </div>
+    let allStrengths = [];
 
-        <div class="readiness-item">
-            <span>👤 Profile</span>
-            <strong id="profileReadiness">0%</strong>
-        </div>
+    let allImprovements = [];
 
-    </div>
+    let faceWarnings = 0;
 
-</section>
-<!-- CAREER FIT ANALYSIS -->
-<section class="career-fit-card">
+    let interviewMonitoring = false;
 
-    <div class="career-fit-header">
-        <div>
-            <h2>🧠 Career Fit Analysis</h2>
-            <p>See how prepared you are for different career paths.</p>
-        </div>
-    </div>
+    let interviewCompleted = false;
 
-    <div id="careerFitContainer">
-        <p>Loading career analysis...</p>
-    </div>
+    let recognition = null;
 
-</section>
-<section class="action-plan-card">
+    let cameraStream = null;
 
-    <div class="action-plan-header">
-        <div>
-            <h2>🚀 AI Career Gap & Action Plan</h2>
-            <p>Your personalized roadmap to become career-ready.</p>
-        </div>
-    </div>
+    let faceCheckInProgress = false;
 
-    <div id="actionPlanContainer">
-        <p>Loading your personalized action plan...</p>
-    </div>
+    let answerSubmitted = false;
 
-</section>
-    <script>
 
-        // ==================================================
-        // VARIABLES
-        // ==================================================
+    /* =========================================================
+       DOM
+    ========================================================= */
 
-        let userId = 1;
+    const camera =
+        document.getElementById("camera");
 
-        let career = "";
+    const answerText =
+        document.getElementById("answerText");
 
-        let questions = [];
+    const answerStatus =
+        document.getElementById("answerStatus");
 
-        let currentQuestionIndex = 0;
 
-        let scores = [];
+    /* =========================================================
+       MESSAGE
+    ========================================================= */
 
-        let allStrengths = [];
+    function showMessage(text) {
 
-        let allImprovements = [];
+        const message =
+            document.getElementById("message");
 
-        let faceWarnings = 0;
-        // ==================================================
-        // HTML ELEMENTS
-        // ==================================================
+        message.textContent = text;
 
-        const questionBox =
-            document.getElementById("question");
+        message.classList.add("show");
 
-        const careerBox =
-            document.getElementById("career");
+        setTimeout(() => {
+            message.classList.remove("show");
+        }, 5000);
+    }
 
-        const startBtn =
-            document.getElementById("startBtn");
 
-        const userIdInput =
-            document.getElementById("userIdInput");
+    /* =========================================================
+       LOAD INTERVIEW
+    ========================================================= */
 
-        const loadBtn =
-            document.getElementById("loadBtn");
+    async function loadInterview() {
 
-        const stopBtn =
-            document.getElementById("stopBtn");
+        const input =
+            document.getElementById("userIdInput").value;
 
-        const submitBtn =
-            document.getElementById("submitBtn");
-
-        const nextBtn =
-            document.getElementById("nextBtn");
-
-        const answerBox =
-            document.getElementById("answer");
-
-        const status =
-            document.getElementById("status");
-
-        const evaluationBox =
-            document.getElementById("evaluation");
-
-        const questionNumber =
-            document.getElementById("questionNumber");
-
-        const totalQuestions =
-            document.getElementById("totalQuestions");
-
-        const finalResult =
-            document.getElementById("finalResult");
-
-        const speakBtn =
-            document.getElementById("speakBtn");
-
-        const voiceStatus =
-            document.getElementById("voiceStatus");
-
-
-        // ==================================================
-        // LOAD INTERVIEW FROM FASTAPI
-        // ==================================================
-
-        async function loadInterview() {
-
-            userId = parseInt(userIdInput.value);
-
-            if (!userId) {
-
-                alert("Please enter a valid User ID.");
-
-                return;
-            }
-
-            try {
-
-                status.innerText =
-                    "⏳ Loading interview...";
-
-                const response = await fetch(
-                    "http://127.0.0.1:8000/mock-interview/" + userId
-                );
-
-                const data = await response.json();
-
-                console.log("Interview data:", data);
-
-
-                if (!response.ok) {
-
-                    throw new Error(
-                        data.detail ||
-                        "Could not load interview"
-                    );
-                }
-
-
-                if (
-                    !data.mock_interviews ||
-                    data.mock_interviews.length === 0
-                ) {
-
-                    throw new Error(
-                        "No interview questions found"
-                    );
-                }
-
-
-                // Get first recommended career
-
-                career =
-                    data.mock_interviews[0].career;
-
-
-                questions =
-                    data.mock_interviews[0].questions;
-
-
-                // Reset interview
-
-                currentQuestionIndex = 0;
-
-                scores = [];
-
-                allStrengths = [];
-
-                allImprovements = [];
-
-                faceWarnings = 0;
-                
-
-document.getElementById("warningCount").innerText = "0";
-loadCareerRecommendations(userId);
-document.getElementById("faceWarning").innerText = "";
-                // Display career
-
-                careerBox.innerText =
-                    career;
-
-
-                // Display total questions
-
-                totalQuestions.innerText =
-                    questions.length;
-
-
-                // Clear final result
-
-                finalResult.innerHTML = "";
-
-
-                // Show first question
-
-                showQuestion();
-
-
-                status.innerText =
-                    "Status: Ready";
-                interviewMonitoring = true;
-document.getElementById("monitorStatus").innerText =
-    "Interview monitoring: ON";
-
-            } catch (error) {
-
-                console.error(
-                    "Load error:",
-                    error
-                );
-
-                careerBox.innerText =
-                    "Unable to load career";
-
-                questionBox.innerText =
-                    "Unable to load interview questions.";
-
-                status.innerText =
-                    "❌ Could not connect to FastAPI.";
-
-            }
+        if (input) {
+            userId = parseInt(input);
         }
-        
 
-        // ==================================================
-        // SHOW CURRENT QUESTION
-        // ==================================================
+        localStorage.setItem("user_id", userId);
 
-        function showQuestion() {
+        try {
 
-            // Interview completed
+            const response = await fetch(
+                `${API_BASE}/mock-interview/${userId}`
+            );
+
+            if (!response.ok) {
+                throw new Error(
+                    `Server returned ${response.status}`
+                );
+            }
+
+            const data = await response.json();
 
             if (
-                currentQuestionIndex >=
-                questions.length
+                !data.mock_interviews ||
+                data.mock_interviews.length === 0
             ) {
-
-                questionBox.innerText =
-                    "🎉 Interview completed!";
-
-                answerBox.innerText =
-                    "All questions completed.";
-
-                startBtn.disabled = true;
-
-                stopBtn.disabled = true;
-
-                submitBtn.disabled = true;
-
-                speakBtn.disabled = true;
-
-                nextBtn.style.display = "none";
-
-                voiceStatus.innerText = "";
-
-                status.innerText =
-                    "Status: Interview completed ✅";
-
-                showFinalResult();
-
-                return;
+                throw new Error(
+                    "No mock interview found for this user."
+                );
             }
 
+            const interview =
+                data.mock_interviews[0];
 
-            // Display question
+            career =
+                interview.career || "Software Developer";
 
-            questionBox.innerText =
-                questions[currentQuestionIndex];
+            questions =
+                interview.questions || [];
 
-
-            // Display question number
-
-            questionNumber.innerText =
-                currentQuestionIndex + 1;
-
-
-            totalQuestions.innerText =
-                questions.length;
-
-
-            // Reset answer
-
-            answerBox.innerText =
-                "Your spoken answer will appear here...";
-
-
-            // Clear evaluation
-
-            evaluationBox.innerHTML = "";
-
-
-            // Reset buttons
-
-            startBtn.disabled = false;
-
-            stopBtn.disabled = true;
-
-            submitBtn.disabled = false;
-
-            speakBtn.disabled = false;
-
-            nextBtn.style.display = "none";
-
-
-            // Reset voice status
-
-            voiceStatus.innerText = "";
-
-
-            // Stop any previous speech
-
-            if ("speechSynthesis" in window) {
-
-                window.speechSynthesis.cancel();
+            if (questions.length === 0) {
+                throw new Error(
+                    "No interview questions available."
+                );
             }
+
+            currentQuestionIndex = 0;
+
+            scores = [];
+
+            allStrengths = [];
+
+            allImprovements = [];
+
+            faceWarnings = 0;
+
+            interviewCompleted = false;
+
+            answerSubmitted = false;
+
+            document.getElementById("careerName")
+                .textContent = career;
+
+            updateWarningDisplay();
+
+            document.getElementById("finalResult")
+                .classList.remove("show");
+
+            showQuestion();
+
+            showMessage(
+                "Interview loaded successfully."
+            );
+
+        } catch (error) {
+
+            console.error(
+                "Load interview error:",
+                error
+            );
+
+            showMessage(
+                "Unable to load interview: " +
+                error.message
+            );
+        }
+    }
+
+
+    /* =========================================================
+       SHOW QUESTION
+    ========================================================= */
+
+    function showQuestion() {
+
+        if (
+            currentQuestionIndex >= questions.length
+        ) {
+            finishInterview();
+            return;
         }
 
+        const question =
+            questions[currentQuestionIndex];
 
-        // ==================================================
-        // TEXT TO SPEECH
-        // ==================================================
+        document.getElementById("questionNumber")
+            .textContent =
+            `QUESTION ${currentQuestionIndex + 1}`;
 
-        function speakQuestion() {
+        document.getElementById("questionCounter")
+            .textContent =
+            `Question ${currentQuestionIndex + 1} of ${questions.length}`;
 
-            const question =
-                questions[currentQuestionIndex];
+        document.getElementById("questionText")
+            .textContent = question;
+
+        answerText.value = "";
+
+        answerStatus.textContent =
+            "Ready to record your answer.";
+
+        answerSubmitted = false;
+
+        document.getElementById("evaluationCard")
+            .classList.remove("show");
+
+        window.scrollTo({
+            top: 0,
+            behavior: "smooth"
+        });
+    }
 
 
-            if (!question) {
+    /* =========================================================
+       SPEAK QUESTION
+    ========================================================= */
 
-                alert("No question available.");
+    function speakQuestion() {
 
-                return;
-            }
+        if (!questions.length) {
+            showMessage(
+                "Please load an interview first."
+            );
+            return;
+        }
 
+        const question =
+            questions[currentQuestionIndex];
 
-            // Check browser support
-
-            if (!("speechSynthesis" in window)) {
-
-                voiceStatus.innerText =
-                    "❌ Text-to-speech is not supported in this browser.";
-
-                return;
-            }
-
-
-            // Stop previous speech
+        if ("speechSynthesis" in window) {
 
             window.speechSynthesis.cancel();
 
-
-            // Create speech
-
-            const speech =
+            const utterance =
                 new SpeechSynthesisUtterance(question);
 
+            utterance.rate = 0.9;
 
-            speech.lang = "en-US";
+            utterance.pitch = 1;
 
-            speech.rate = 0.9;
+            utterance.volume = 1;
 
-            speech.pitch = 1;
+            window.speechSynthesis.speak(
+                utterance
+            );
 
-            speech.volume = 1;
+        } else {
 
-
-            // Find English voice
-
-            const voices =
-                window.speechSynthesis.getVoices();
-
-
-            const englishVoice =
-                voices.find(
-                    voice =>
-                        voice.lang.startsWith("en")
-                );
-
-
-            if (englishVoice) {
-
-                speech.voice =
-                    englishVoice;
-            }
-
-
-            // When speaking starts
-
-            speech.onstart = function () {
-
-                voiceStatus.innerText =
-                    "🔊 Speaking question...";
-
-                status.innerText =
-                    "Status: 🔊 Question is being spoken...";
-            };
-
-
-            // When speaking finishes
-
-            speech.onend = function () {
-
-                voiceStatus.innerText =
-                    "✅ Question spoken.";
-
-                status.innerText =
-                    "Status: Ready";
-            };
-
-
-            // If speech fails
-
-            speech.onerror = function (event) {
-
-                console.error(
-                    "Speech error:",
-                    event
-                );
-
-                voiceStatus.innerText =
-                    "❌ Could not speak the question.";
-
-                status.innerText =
-                    "Status: Voice error";
-            };
-
-
-            // Speak
-
-            window.speechSynthesis.speak(speech);
+            showMessage(
+                "Speech synthesis is not supported by this browser."
+            );
         }
+    }
 
 
-        // Speak button
+    /* =========================================================
+       START ANSWER
+    ========================================================= */
 
-        speakBtn.onclick = function () {
+    function startAnswer() {
 
-            speakQuestion();
-
-        };
-
-
-        // ==================================================
-        // SPEECH RECOGNITION
-        // ==================================================
+        if (!questions.length) {
+            showMessage(
+                "Please load an interview first."
+            );
+            return;
+        }
 
         const SpeechRecognition =
             window.SpeechRecognition ||
             window.webkitSpeechRecognition;
 
-
-        let recognition = null;
-
-
         if (!SpeechRecognition) {
 
-            status.innerText =
-                "❌ Speech recognition is not supported. Please use Google Chrome.";
+            showMessage(
+                "Speech recognition is not supported. Please use Google Chrome."
+            );
 
-            startBtn.disabled = true;
-
-            stopBtn.disabled = true;
-
-        } else {
-
-            recognition =
-                new SpeechRecognition();
-
-
-            recognition.lang =
-                "en-US";
-
-
-            recognition.continuous =
-                false;
-
-
-            recognition.interimResults =
-                false;
-
-
-            // ------------------------------------------
-            // START LISTENING
-            // ------------------------------------------
-
-            recognition.onstart =
-                function () {
-
-                    status.innerText =
-                        "Status: 🎤 Listening... Speak now.";
-
-                    startBtn.disabled =
-                        true;
-
-                    stopBtn.disabled =
-                        false;
-                };
-
-
-            // ------------------------------------------
-            // GET ANSWER
-            // ------------------------------------------
-
-            recognition.onresult =
-                function (event) {
-
-                    const transcript =
-                        event.results[0][0].transcript;
-
-
-                    answerBox.innerText =
-                        transcript;
-
-
-                    status.innerText =
-                        "Status: Answer recorded ✅";
-                };
-
-
-            // ------------------------------------------
-            // ERROR
-            // ------------------------------------------
-
-            recognition.onerror =
-                function (event) {
-
-                    console.error(
-                        "Speech recognition error:",
-                        event.error
-                    );
-
-
-                    status.innerText =
-                        "❌ Speech error: " +
-                        event.error;
-
-
-                    startBtn.disabled =
-                        false;
-
-                    stopBtn.disabled =
-                        true;
-                };
-
-
-            // ------------------------------------------
-            // END
-            // ------------------------------------------
-
-            recognition.onend =
-                function () {
-
-                    startBtn.disabled =
-                        false;
-
-                    stopBtn.disabled =
-                        true;
-                };
-
-
-            // ------------------------------------------
-            // START BUTTON
-            // ------------------------------------------
-
-            startBtn.onclick =
-                function () {
-
-                    answerBox.innerText = "";
-
-                    evaluationBox.innerHTML = "";
-
-                    status.innerText =
-                        "Status: Starting microphone...";
-
-
-                    try {
-
-                        recognition.start();
-
-                    } catch (error) {
-
-                        console.error(error);
-                    }
-                };
-
-
-            // ------------------------------------------
-            // STOP BUTTON
-            // ------------------------------------------
-
-            stopBtn.onclick =
-                function () {
-
-                    recognition.stop();
-
-                    status.innerText =
-                        "Status: Stopping...";
-                };
+            return;
         }
 
+        if (recognition) {
+            recognition.stop();
+        }
 
-        // ==================================================
-        // SUBMIT ANSWER
-        // ==================================================
+        recognition =
+            new SpeechRecognition();
 
-        submitBtn.onclick =
-            async function () {
+        recognition.lang = "en-US";
 
-                const answer =
-                    answerBox.innerText.trim();
+        recognition.continuous = false;
 
+        recognition.interimResults = false;
 
-                if (
-                    !answer ||
-                    answer ===
-                    "Your spoken answer will appear here..."
+        recognition.onstart = function () {
+
+            answerStatus.textContent =
+                "🎙 Listening... Speak clearly.";
+
+        };
+
+        recognition.onresult =
+            function(event) {
+
+                let transcript = "";
+
+                for (
+                    let i = event.resultIndex;
+                    i < event.results.length;
+                    i++
                 ) {
 
-                    alert(
-                        "Please record your answer first."
-                    );
-
-                    return;
+                    transcript +=
+                        event.results[i][0].transcript;
                 }
 
+                answerText.value =
+                    transcript.trim();
 
-                evaluationBox.innerHTML =
-                    "⏳ Evaluating your answer...";
+                answerStatus.textContent =
+                    "✅ Answer recorded.";
 
-
-                try {
-
-                    const response =
-                        await fetch(
-                            "http://127.0.0.1:8000/evaluate-answer",
-                            {
-                                method: "POST",
-
-                                headers: {
-                                    "Content-Type":
-                                        "application/json"
-                                },
-
-                                body:
-                                    JSON.stringify({
-
-                                        user_id:
-                                            userId,
-
-                                        career:
-                                            career,
-
-                                        question:
-                                            questions[
-                                                currentQuestionIndex
-                                            ],
-
-                                        answer:
-                                            answer
-                                    })
-                            }
-                        );
-
-
-                    const data =
-                        await response.json();
-
-
-                    if (!response.ok) {
-
-                        throw new Error(
-                            data.detail ||
-                            "Evaluation failed"
-                        );
-                    }
-
-
-                    const evaluation =
-                        data.evaluation;
-
-
-                    // Save score
-
-                    scores.push(
-                        evaluation.score
-                    );
-
-
-                    // Save strengths
-
-                    if (
-                        evaluation.strengths
-                    ) {
-
-                        allStrengths.push(
-                            ...evaluation.strengths
-                        );
-                    }
-
-
-                    // Save improvements
-
-                    if (
-                        evaluation.areas_to_improve
-                    ) {
-
-                        allImprovements.push(
-                            ...evaluation.areas_to_improve
-                        );
-                    }
-
-
-                    // Display evaluation
-
-                    evaluationBox.innerHTML = `
-
-                        <h3>📊 Evaluation</h3>
-
-                        <p>
-                            <strong>Score:</strong>
-                            ${evaluation.score}/10
-                        </p>
-
-                        <p>
-                            <strong>Feedback:</strong>
-                            ${evaluation.feedback}
-                        </p>
-
-                        <p>
-                            <strong>Strengths:</strong>
-                        </p>
-
-                        <ul>
-                            ${
-                                (evaluation.strengths || [])
-                                    .map(
-                                        item =>
-                                            `<li>${item}</li>`
-                                    )
-                                    .join("")
-                            }
-                        </ul>
-
-                        <p>
-                            <strong>
-                                Areas to Improve:
-                            </strong>
-                        </p>
-
-                        <ul>
-                            ${
-                                (evaluation.areas_to_improve || [])
-                                    .map(
-                                        item =>
-                                            `<li>${item}</li>`
-                                    )
-                                    .join("")
-                            }
-                        </ul>
-                    `;
-
-
-                    // Show next button
-
-                    nextBtn.style.display =
-                        "inline-block";
-
-
-                    // Disable submit
-
-                    submitBtn.disabled =
-                        true;
-
-
-                } catch (error) {
-
-                    console.error(
-                        "Evaluation error:",
-                        error
-                    );
-
-
-                    evaluationBox.innerHTML =
-                        "❌ Could not connect to the FastAPI server.";
-                }
             };
 
+        recognition.onerror =
+            function(event) {
 
-        // ==================================================
-        // NEXT QUESTION
-        // ==================================================
+                console.error(
+                    "Speech recognition error:",
+                    event.error
+                );
 
-       nextBtn.onclick = function () {
+                answerStatus.textContent =
+                    "⚠ Speech recognition error.";
 
-    currentQuestionIndex++;
+            };
 
-    submitBtn.disabled = false;
+        recognition.onend =
+            function() {
 
-    // Check if interview is finished
-    if (currentQuestionIndex >= questions.length) {
+                if (
+                    answerStatus.textContent.includes(
+                        "Listening"
+                    )
+                ) {
+                    answerStatus.textContent =
+                        "Recording stopped.";
+                }
 
-        showFinalResult();
+            };
 
-        interviewMonitoring = false;
-
-        document.getElementById("monitorStatus").innerText =
-            "Interview monitoring: OFF";
-
-        if (camera.srcObject) {
-
-            const tracks =
-                camera.srcObject.getTracks();
-
-            tracks.forEach(track => track.stop());
-
-            camera.srcObject = null;
-        }
-
-        faceStatus.innerText =
-            "Interview completed";
-
-        status.innerText =
-            "🎉 Interview Completed";
-
-        return;
+        recognition.start();
     }
 
-    showQuestion();
-};
+
+    /* =========================================================
+       STOP ANSWER
+    ========================================================= */
+
+    function stopAnswer() {
+
+        if (recognition) {
+
+            recognition.stop();
+
+            answerStatus.textContent =
+                "⏹ Recording stopped.";
+
+        }
+    }
 
 
-        // ==================================================
-        // FINAL RESULT
-        // ==================================================
+    /* =========================================================
+       SUBMIT ANSWER
+    ========================================================= */
 
-        function showFinalResult() {
+    async function submitAnswer() {
 
-            if (scores.length === 0) {
+        if (!questions.length) {
 
-                return;
-            }
+            showMessage(
+                "Please load an interview first."
+            );
 
-
-            const totalScore =
-                scores.reduce(
-                    (sum, score) =>
-                        sum + score,
-                    0
-                );
-
-
-            const averageScore =
-                totalScore /
-                scores.length;
-            const uniqueStrengths =
-                [
-                    ...new Set(
-                        allStrengths
-                    )
-                ];
-
-
-            const uniqueImprovements =
-                [
-                    ...new Set(
-                        allImprovements
-                    )
-                ];
-    saveInterviewResult(
-    averageScore,
-    uniqueStrengths,
-    uniqueImprovements
-);
-            const monitoringResult =
-    faceWarnings === 0
-        ? "Excellent — face was visible throughout the interview."
-        : `Face monitoring recorded ${faceWarnings} warning(s).`;
-            finalResult.innerHTML = `
-
-                <h2>
-                    🎉 Interview Completed!
-                </h2>
-
-                <h3>
-                    📊 Overall Performance
-                </h3>
-
-                <p>
-                    <strong>Career:</strong>
-                    ${career}
-                </p>
-
-                <p>
-                    <strong>
-                        Questions Answered:
-                    </strong>
-                    ${scores.length}/${questions.length}
-                </p>
-
-                <p>
-                    <strong>
-                        Average Score:
-                    </strong>
-                    ${averageScore.toFixed(1)}/10
-                </p>
-                <p>
-    <strong>
-        🎥 Face Monitoring:
-    </strong>
-    ${monitoringResult}
-</p>
-
-<p>
-    <strong>
-        ⚠️ Face Warnings:
-    </strong>
-    ${faceWarnings}
-</p>
-                <h3>
-                    💪 Overall Strengths
-                </h3>
-
-                <ul>
-                    ${
-                        uniqueStrengths
-                            .map(
-                                item =>
-                                    `<li>${item}</li>`
-                            )
-                            .join("")
-                    }
-                </ul>
-
-                <h3>
-                    📈 Areas to Improve
-                </h3>
-
-                <ul>
-                    ${
-                        uniqueImprovements
-                            .map(
-                                item =>
-                                    `<li>${item}</li>`
-                            )
-                            .join("")
-                    }
-                </ul>
-            `;
+            return;
         }
 
+        const answer =
+            answerText.value.trim();
 
-        // ==================================================
-        // LOAD BUTTON
-        // ==================================================
+        if (!answer) {
 
-        loadBtn.onclick =
-            function () {
+            showMessage(
+                "Please provide an answer before submitting."
+            );
 
-                userId =
-                    parseInt(
-                        userIdInput.value
-                    );
+            return;
+        }
 
+        if (answerSubmitted) {
 
-                if (!userId) {
+            showMessage(
+                "This answer has already been submitted."
+            );
 
-                    alert(
-                        "Please enter a valid User ID."
-                    );
+            return;
+        }
 
-                    return;
+        const question =
+            questions[currentQuestionIndex];
+
+        try {
+
+            answerStatus.textContent =
+                "🤖 AI is evaluating your answer...";
+
+            const response = await fetch(
+                `${API_BASE}/evaluate-answer`,
+                {
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body: JSON.stringify({
+
+                        user_id: userId,
+
+                        career: career,
+
+                        question: question,
+
+                        answer: answer
+
+                    })
                 }
+            );
 
-
-                localStorage.setItem(
-                    "user_id",
-                    userId
+            if (!response.ok) {
+                throw new Error(
+                    `Evaluation failed (${response.status})`
                 );
+            }
+
+            const data =
+                await response.json();
+
+            const evaluation =
+                data.evaluation;
+
+            if (!evaluation) {
+                throw new Error(
+                    "Invalid evaluation response."
+                );
+            }
+
+            answerSubmitted = true;
+
+            const score =
+                Number(evaluation.score) || 0;
+
+            scores.push(score);
 
 
-                loadInterview();
-            };
+            /* ================= STRENGTHS ================= */
+
+            let strengths =
+                evaluation.strengths || [];
+
+            if (!Array.isArray(strengths)) {
+                strengths = [strengths];
+            }
+
+            strengths =
+                strengths.filter(Boolean);
+
+            allStrengths.push(...strengths);
 
 
-        // ==================================================
-        // LOAD SAVED USER
-        // ==================================================
+            /* ================= IMPROVEMENTS ================= */
 
-        const savedUserId =
-            localStorage.getItem(
-                "user_id"
+            let improvements =
+                evaluation.areas_to_improve ||
+                evaluation.improvements ||
+                [];
+
+            if (!Array.isArray(improvements)) {
+                improvements = [improvements];
+            }
+
+            improvements =
+                improvements.filter(Boolean);
+
+            allImprovements.push(...improvements);
+
+
+            /* ================= DISPLAY ================= */
+
+            document.getElementById("evaluationScore")
+                .textContent =
+                `${score}/10`;
+
+            document.getElementById("evaluationFeedback")
+                .textContent =
+                evaluation.feedback ||
+                evaluation.explanation ||
+                "Good attempt. Keep improving your explanation.";
+
+
+            renderList(
+                "strengthsList",
+                strengths
+            );
+
+            renderList(
+                "improvementsList",
+                improvements
             );
 
 
-        if (savedUserId) {
+            document.getElementById("evaluationCard")
+                .classList.add("show");
 
-            userId =
-                parseInt(
-                    savedUserId
-                );
+            answerStatus.textContent =
+                "✅ Answer evaluated successfully.";
 
-            userIdInput.value =
-                userId;
+        } catch (error) {
+
+            console.error(
+                "Evaluation error:",
+                error
+            );
+
+            answerStatus.textContent =
+                "⚠ Evaluation failed.";
+
+            showMessage(
+                "Unable to evaluate answer: " +
+                error.message
+            );
+        }
+    }
+
+
+    /* =========================================================
+       NEXT QUESTION
+    ========================================================= */
+
+    function nextQuestion() {
+
+        if (!answerSubmitted) {
+
+            showMessage(
+                "Please submit your answer before moving to the next question."
+            );
+
+            return;
         }
 
+        currentQuestionIndex++;
 
-        // ==================================================
-        // LOAD INTERVIEW WHEN PAGE OPENS
-        // ==================================================
+        if (
+            currentQuestionIndex >=
+            questions.length
+        ) {
 
-        loadInterview();
+            finishInterview();
 
-
-        // ==================================================
-        // LOAD BROWSER VOICES
-        // ==================================================
-
-        if ("speechSynthesis" in window) {
-
-            window.speechSynthesis.onvoiceschanged =
-                function () {
-
-                    console.log(
-                        "Browser voices loaded:",
-                        window.speechSynthesis.getVoices()
-                    );
-                };
+            return;
         }
-const camera = document.getElementById("camera");
-const faceStatus = document.getElementById("faceStatus");
 
-async function startCamera() {
-    try {
-        const stream = await navigator.mediaDevices.getUserMedia({
-            video: true
-        });
+        showQuestion();
+    }
 
-        camera.srcObject = stream;
 
-        faceStatus.innerText = "Camera started";
+    /* =========================================================
+       START INTERVIEW
+    ========================================================= */
+
+    async function startInterview() {
+
+        if (!questions.length) {
+
+            await loadInterview();
+
+            if (!questions.length) {
+                return;
+            }
+        }
+
+        interviewCompleted = false;
 
         interviewMonitoring = true;
 
-        document.getElementById("monitorStatus").innerText =
-            "Interview monitoring: ON";
+        await startCamera();
 
-    } catch (error) {
-        console.error(error);
+        showMessage(
+            "Interview started. Good luck! 🎤"
+        );
 
-        faceStatus.innerText =
-            "Could not access camera";
+        showQuestion();
+    }
+
+
+    /* =========================================================
+       FINISH INTERVIEW
+    ========================================================= */
+
+    async function finishInterview() {
+
+        if (interviewCompleted) {
+            return;
+        }
+
+        if (
+            scores.length === 0 &&
+            currentQuestionIndex === 0
+        ) {
+
+            showMessage(
+                "Please answer at least one question first."
+            );
+
+            return;
+        }
+
+        interviewCompleted = true;
 
         interviewMonitoring = false;
 
-        document.getElementById("monitorStatus").innerText =
-            "Interview monitoring: OFF";
+        stopAnswer();
+
+        stopCamera();
+
+        showFinalResult();
+
+        await saveInterviewResult();
     }
-}
-async function saveInterviewResult(
-    averageScore,
-    strengths,
-    improvements
-) {
-    try {
-        const response = await fetch(
-            "http://127.0.0.1:8000/interview-results",
-            {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    user_id: userId,
-                    career: career,
-                    average_score: averageScore,
-                    questions_answered: scores.length,
-                    face_warnings: faceWarnings,
-                    strengths: strengths.join(", "),
-                    improvements: improvements.join(", ")
-                })
-            }
+
+
+    /* =========================================================
+       FINAL RESULT
+    ========================================================= */
+
+    function showFinalResult() {
+
+        const total =
+            scores.reduce(
+                (sum, score) => sum + score,
+                0
+            );
+
+        const average =
+            scores.length
+                ? total / scores.length
+                : 0;
+
+        const roundedAverage =
+            Math.round(average * 10) / 10;
+
+        document.getElementById("finalScore")
+            .textContent =
+            `${roundedAverage}/10`;
+
+        document.getElementById("finalQuestions")
+            .textContent =
+            scores.length;
+
+        document.getElementById("finalWarnings")
+            .textContent =
+            faceWarnings;
+
+        document.getElementById("finalCareer")
+            .textContent =
+            career;
+
+
+        const uniqueStrengths =
+            [...new Set(
+                allStrengths
+                    .filter(Boolean)
+                    .map(item => String(item))
+            )];
+
+        const uniqueImprovements =
+            [...new Set(
+                allImprovements
+                    .filter(Boolean)
+                    .map(item => String(item))
+            )];
+
+
+        renderList(
+            "finalStrengths",
+            uniqueStrengths
         );
 
-        const data = await response.json();
-
-        if (response.ok) {
-            console.log(
-                "Interview result saved:",
-                data
-            );
-        } else {
-            console.error(
-                "Could not save result:",
-                data
-            );
-        }
-
-    } catch (error) {
-        console.error(
-            "Save result error:",
-            error
+        renderList(
+            "finalImprovements",
+            uniqueImprovements
         );
+
+
+        document.getElementById("finalResult")
+            .classList.add("show");
+
+        document.getElementById("finalResult")
+            .scrollIntoView({
+                behavior: "smooth"
+            });
     }
-}
-async function checkFace() {
-    if (!camera.srcObject) {
-        faceStatus.innerText = "Start the camera first";
-        return;
-    }
 
-    const canvas = document.createElement("canvas");
-    canvas.width = camera.videoWidth;
-    canvas.height = camera.videoHeight;
 
-    const context = canvas.getContext("2d");
-    context.drawImage(camera, 0, 0, canvas.width, canvas.height);
+    /* =========================================================
+       SAVE INTERVIEW RESULT
+    ========================================================= */
 
-    canvas.toBlob(async (blob) => {
-        const formData = new FormData();
-        formData.append("file", blob, "camera.jpg");
+    async function saveInterviewResult() {
+
+        const total =
+            scores.reduce(
+                (sum, score) => sum + score,
+                0
+            );
+
+        const average =
+            scores.length
+                ? total / scores.length
+                : 0;
+
+        const uniqueStrengths =
+            [...new Set(allStrengths)]
+                .filter(Boolean);
+
+        const uniqueImprovements =
+            [...new Set(allImprovements)]
+                .filter(Boolean);
 
         try {
-            const response = await fetch("http://127.0.0.1:8000/detect-face", {
-                method: "POST",
-                body: formData
-            });
 
-            const result = await response.json();
+            const response = await fetch(
+                `${API_BASE}/interview-results`,
+                {
+                    method: "POST",
 
-            if (result.face_detected) {
-    faceStatus.innerText = "✅ Face detected";
-
-    document.getElementById("faceWarning").innerText = "";
-} else {
-    faceStatus.innerText = "❌ No face detected";
-
-    faceWarnings++;
-
-    document.getElementById("warningCount").innerText =
-        faceWarnings;
-
-    document.getElementById("faceWarning").innerText =
-        "⚠️ Warning: Please keep your face visible during the interview.";
-}
-
-        } catch (error) {
-            console.error(error);
-            faceStatus.innerText = "Face detection failed";
-        }
-    }, "image/jpeg");
-}
-let interviewMonitoring = false;
-
-setInterval(() => {
-    if (camera.srcObject && interviewMonitoring) {
-        checkFace();
-    }
-}, 5000);
-function stopInterview() {
-    interviewMonitoring = false;
-
-    document.getElementById("monitorStatus").innerText =
-        "Interview monitoring: OFF";
-
-    if (camera.srcObject) {
-        const tracks = camera.srcObject.getTracks();
-
-        tracks.forEach(track => track.stop());
-
-        camera.srcObject = null;
-    }
-
-    faceStatus.innerText = "Camera stopped";
-}
-function startInterview() {
-    // Start camera
-    startCamera();
-
-    // Start interview monitoring
-    interviewMonitoring = true;
-
-    document.getElementById("monitorStatus").innerText =
-        "Interview monitoring: ON";
-
-    // Load interview questions
-    loadInterview();
-}
-
-async function loadInterviewHistory() {
-    const historyBox =
-        document.getElementById("interviewHistory");
-
-    if (!userId) {
-        historyBox.innerText =
-            "Please enter a valid User ID.";
-        return;
-    }
-
-    try {
-        const response = await fetch(
-            `http://127.0.0.1:8000/interview-results/${userId}`
-        );
-
-        const results = await response.json();
-
-        if (!response.ok) {
-            throw new Error(
-                "Could not load interview history"
-            );
-        }
-
-        if (results.length === 0) {
-            historyBox.innerHTML =
-                "<p>No interview history found.</p>";
-            return;
-        }
-        updateDashboard(results);
-        updatePerformanceChart(results);
-        historyBox.innerHTML = results.map(result => `
-            <div class="history-card">
-
-                <h3>${result.career}</h3>
-
-                <p>
-                    <strong>Score:</strong>
-                    ${result.average_score.toFixed(1)}/10
-                </p>
-
-                <p>
-                    <strong>Questions:</strong>
-                    ${result.questions_answered}
-                </p>
-
-                <p>
-                    <strong>Face Warnings:</strong>
-                    ${result.face_warnings}
-                </p>
-
-                <p>
-                    <strong>Strengths:</strong>
-                    ${result.strengths || "None"}
-                </p>
-
-                <p>
-                    <strong>Improvements:</strong>
-                    ${result.improvements || "None"}
-                </p>
-
-            </div>
-        `).join("");
-
-    } catch (error) {
-        console.error(
-            "History error:",
-            error
-        );
-
-        historyBox.innerText =
-            "Could not load interview history.";
-    }
-}
-function updateDashboard(results) {
-
-    if (!results || results.length === 0) {
-        return;
-    }
-
-    const totalInterviews = results.length;
-
-    const totalScore = results.reduce(
-        (sum, result) =>
-            sum + result.average_score,
-        0
-    );
-
-    const overallAverage =
-        totalScore / totalInterviews;
-
-    const bestScore = Math.max(
-        ...results.map(
-            result => result.average_score
-        )
-    );
-
-    const totalWarnings = results.reduce(
-        (sum, result) =>
-            sum + result.face_warnings,
-        0
-    );
-
-    document.getElementById("totalInterviews")
-        .innerText = totalInterviews;
-
-    document.getElementById("overallAverage")
-        .innerText = overallAverage.toFixed(1);
-
-    document.getElementById("bestScore")
-        .innerText = bestScore.toFixed(1);
-
-    document.getElementById("totalWarnings")
-        .innerText = totalWarnings;
-}
-let performanceChartInstance = null;
-
-function updatePerformanceChart(results) {
-
-    const canvas =
-        document.getElementById("performanceChart");
-
-    if (!canvas) {
-        console.error("Performance chart canvas not found.");
-        return;
-    }
-
-    const labels = results.map(
-        (result, index) =>
-            `Interview ${index + 1}`
-    );
-
-    const scores = results.map(
-        result => result.average_score
-    );
-
-    // Destroy the previous Chart.js instance
-    if (performanceChartInstance) {
-        performanceChartInstance.destroy();
-        performanceChartInstance = null;
-    }
-
-    performanceChartInstance = new Chart(
-        canvas,
-        {
-            type: "line",
-
-            data: {
-                labels: labels,
-
-                datasets: [{
-                    label: "Interview Score",
-                    data: scores,
-                    borderWidth: 2,
-                    tension: 0.3
-                }]
-            },
-
-            options: {
-                responsive: true,
-
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        max: 10,
-
-                        title: {
-                            display: true,
-                            text: "Score / 10"
-                        }
+                    headers: {
+                        "Content-Type":
+                            "application/json"
                     },
 
-                    x: {
-                        title: {
-                            display: true,
-                            text: "Interview Attempts"
-                        }
-                    }
-                }
-            }
-        }
-    );
-}
-function downloadInterviewReport() {
+                    body: JSON.stringify({
 
-    if (!career || scores.length === 0) {
-        alert("Please complete an interview first.");
-        return;
+                        user_id: userId,
+
+                        career: career,
+
+                        average_score:
+                            Math.round(
+                                average * 10
+                            ) / 10,
+
+                        questions_answered:
+                            scores.length,
+
+                        face_warnings:
+                            faceWarnings,
+
+                        strengths:
+                            uniqueStrengths.join(", "),
+
+                        improvements:
+                            uniqueImprovements.join(", ")
+
+                    })
+                }
+            );
+
+            if (!response.ok) {
+
+                throw new Error(
+                    `Save failed (${response.status})`
+                );
+            }
+
+            console.log(
+                "Interview result saved successfully."
+            );
+
+        } catch (error) {
+
+            console.error(
+                "Save result error:",
+                error
+            );
+
+            showMessage(
+                "Interview completed, but result could not be saved."
+            );
+        }
     }
 
-    const totalScore = scores.reduce(
-        (sum, score) => sum + score,
-        0
+
+    /* =========================================================
+       CAMERA
+    ========================================================= */
+
+    async function startCamera() {
+
+        try {
+
+            if (cameraStream) {
+                return;
+            }
+
+            cameraStream =
+                await navigator.mediaDevices.getUserMedia(
+                    {
+                        video: true,
+                        audio: false
+                    }
+                );
+
+            camera.srcObject =
+                cameraStream;
+
+            document.getElementById("faceStatus")
+                .textContent =
+                "● Camera: Active";
+
+            interviewMonitoring = true;
+
+        } catch (error) {
+
+            console.error(
+                "Camera error:",
+                error
+            );
+
+            showMessage(
+                "Camera access failed. Please allow camera permission."
+            );
+        }
+    }
+
+
+    /* =========================================================
+       STOP CAMERA
+    ========================================================= */
+
+    function stopCamera() {
+
+        interviewMonitoring = false;
+
+        if (cameraStream) {
+
+            cameraStream
+                .getTracks()
+                .forEach(track => track.stop());
+
+            cameraStream = null;
+        }
+
+        camera.srcObject = null;
+
+        document.getElementById("faceStatus")
+            .textContent =
+            "● Camera: Off";
+    }
+
+
+    /* =========================================================
+       FACE DETECTION
+    ========================================================= */
+
+    async function checkFace() {
+
+        if (!cameraStream) {
+
+            showMessage(
+                "Please start the camera first."
+            );
+
+            return;
+        }
+
+        if (faceCheckInProgress) {
+            return;
+        }
+
+        faceCheckInProgress = true;
+
+        try {
+
+            const canvas =
+                document.createElement("canvas");
+
+            canvas.width =
+                camera.videoWidth || 640;
+
+            canvas.height =
+                camera.videoHeight || 480;
+
+            const context =
+                canvas.getContext("2d");
+
+            context.drawImage(
+                camera,
+                0,
+                0,
+                canvas.width,
+                canvas.height
+            );
+
+            const blob =
+                await new Promise(resolve =>
+                    canvas.toBlob(
+                        resolve,
+                        "image/jpeg",
+                        0.85
+                    )
+                );
+
+            if (!blob) {
+                throw new Error(
+                    "Could not capture camera frame."
+                );
+            }
+
+            const formData =
+                new FormData();
+
+            formData.append(
+                "file",
+                blob,
+                "camera.jpg"
+            );
+
+            const response =
+                await fetch(
+                    `${API_BASE}/detect-face`,
+                    {
+                        method: "POST",
+                        body: formData
+                    }
+                );
+
+            if (!response.ok) {
+                throw new Error(
+                    `Face detection failed (${response.status})`
+                );
+            }
+
+            const result =
+                await response.json();
+
+            if (result.face_detected) {
+
+                document.getElementById("faceStatus")
+                    .textContent =
+                    "● Face: Detected ✓";
+
+                document.getElementById("faceStatus")
+                    .style.color =
+                    "#86efac";
+
+            } else {
+
+                faceWarnings++;
+
+                updateWarningDisplay();
+
+                document.getElementById("faceStatus")
+                    .textContent =
+                    "● Face: Not Detected ⚠";
+
+                document.getElementById("faceStatus")
+                    .style.color =
+                    "#fbbf24";
+            }
+
+        } catch (error) {
+
+            console.error(
+                "Face detection error:",
+                error
+            );
+
+        } finally {
+
+            faceCheckInProgress = false;
+        }
+    }
+
+
+    /* =========================================================
+       AUTOMATIC FACE MONITORING
+    ========================================================= */
+
+    setInterval(
+        function() {
+
+            if (
+                interviewMonitoring &&
+                cameraStream &&
+                !interviewCompleted
+            ) {
+                checkFace();
+            }
+
+        },
+        5000
     );
 
-    const averageScore =
-        totalScore / scores.length;
 
-    const strengths =
-        [...new Set(allStrengths)].join(", ");
+    /* =========================================================
+       WARNING DISPLAY
+    ========================================================= */
 
-    const improvements =
-        [...new Set(allImprovements)].join(", ");
+    function updateWarningDisplay() {
 
-    const report =
-`AI INTERVIEW PERFORMANCE REPORT
+        document.getElementById("warningStatus")
+            .textContent =
+            `Warnings: ${faceWarnings}`;
+    }
 
-Career: ${career}
+
+    /* =========================================================
+       RENDER LIST
+    ========================================================= */
+
+    function renderList(elementId, items) {
+
+        const element =
+            document.getElementById(elementId);
+
+        element.innerHTML = "";
+
+        if (
+            !items ||
+            items.length === 0
+        ) {
+
+            const li =
+                document.createElement("li");
+
+            li.textContent =
+                "No specific feedback available.";
+
+            element.appendChild(li);
+
+            return;
+        }
+
+        items.forEach(item => {
+
+            const li =
+                document.createElement("li");
+
+            li.textContent =
+                String(item);
+
+            element.appendChild(li);
+
+        });
+    }
+
+
+    /* =========================================================
+       DOWNLOAD TEXT REPORT
+    ========================================================= */
+
+    function downloadInterviewReport() {
+
+        const total =
+            scores.reduce(
+                (sum, score) => sum + score,
+                0
+            );
+
+        const average =
+            scores.length
+                ? total / scores.length
+                : 0;
+
+        const roundedAverage =
+            Math.round(average * 10) / 10;
+
+        const strengths =
+            [...new Set(allStrengths)]
+                .filter(Boolean);
+
+        const improvements =
+            [...new Set(allImprovements)]
+                .filter(Boolean);
+
+
+        const report = `
+
+AI CAREER INTELLIGENCE
+AI MOCK INTERVIEW REPORT
+========================================
 
 User ID: ${userId}
+Career: ${career}
 
-Questions Answered:
-${scores.length}/${questions.length}
+Questions Answered: ${scores.length}
+Average Score: ${roundedAverage}/10
+Face Warnings: ${faceWarnings}
 
-Average Score:
-${averageScore.toFixed(1)}/10
+----------------------------------------
+STRENGTHS
+----------------------------------------
 
-Face Warnings:
-${faceWarnings}
+${strengths.length
+    ? strengths.map(x => "• " + x).join("\n")
+    : "No specific strengths recorded."}
 
-STRENGTHS:
-${strengths || "No strengths recorded."}
 
-AREAS TO IMPROVE:
-${improvements || "No improvements recorded."}
+----------------------------------------
+AREAS TO IMPROVE
+----------------------------------------
 
-Face Monitoring:
-${
-    faceWarnings === 0
-        ? "Excellent - face was visible throughout the interview."
-        : "Face monitoring recorded " + faceWarnings + " warning(s)."
-}
+${improvements.length
+    ? improvements.map(x => "• " + x).join("\n")
+    : "No specific improvements recorded."}
 
+
+----------------------------------------
+QUESTION SCORES
+----------------------------------------
+
+${scores.length
+    ? scores.map(
+        (score, index) =>
+            `Question ${index + 1}: ${score}/10`
+      ).join("\n")
+    : "No scores available."}
+
+
+========================================
 Generated by AI Career Intelligence
 `;
 
-    const blob = new Blob(
-        [report],
-        { type: "text/plain" }
-    );
-
-    const url =
-        URL.createObjectURL(blob);
-
-    const link =
-        document.createElement("a");
-
-    link.href = url;
-
-    link.download =
-        "AI_Interview_Performance_Report.txt";
-
-    document.body.appendChild(link);
-
-    link.click();
-
-    document.body.removeChild(link);
-
-    URL.revokeObjectURL(url);
-}
-async function downloadPDFReport() {
-
-    if (!userId) {
-        alert("Please enter a valid User ID.");
-        return;
-    }
-
-    try {
-
-        const response = await fetch(
-            `http://127.0.0.1:8000/download-report/${userId}`
-        );
-
-        if (!response.ok) {
-
-            const errorData =
-                await response.json();
-
-            throw new Error(
-                errorData.detail ||
-                "Could not generate PDF report"
-            );
-        }
 
         const blob =
-            await response.blob();
+            new Blob(
+                [report],
+                {
+                    type: "text/plain"
+                }
+            );
 
         const url =
             URL.createObjectURL(blob);
@@ -2175,455 +2095,144 @@ async function downloadPDFReport() {
         link.href = url;
 
         link.download =
-            "AI_Interview_Performance_Report.pdf";
+            `interview_report_${userId}.txt`;
 
         document.body.appendChild(link);
 
         link.click();
 
-        document.body.removeChild(link);
+        link.remove();
 
         URL.revokeObjectURL(url);
-
-    } catch (error) {
-
-        console.error(
-            "PDF download error:",
-            error
-        );
-
-        alert(
-            "Could not download PDF report."
-        );
     }
-}
-async function loadCareerRecommendations(userId) {
-loadCareerReadiness(userId);
-loadCareerFitAnalysis(userId);
-loadCareerGapActionPlan(userId);
-    try {
-        const response = await fetch(
-            `http://127.0.0.1:8000/career-recommendations/${userId}`
-        );
 
-        if (!response.ok) {
-            throw new Error("Failed to load recommendations");
-        }
 
-        const data = await response.json();
+    /* =========================================================
+       DOWNLOAD PDF REPORT
+    ========================================================= */
 
-        const container =
-            document.getElementById("careerRecommendations");
+    async function downloadPDFReport() {
 
-        container.innerHTML = "";
+        try {
 
-        data.recommendations.forEach((career, index) => {
+            const response =
+                await fetch(
+                    `${API_BASE}/download-report/${userId}`
+                );
 
-            const card = document.createElement("div");
+            if (!response.ok) {
 
-            card.className = "career-card";
+                throw new Error(
+                    `PDF download failed (${response.status})`
+                );
+            }
 
-            card.innerHTML = `
-                <div class="career-number">
-                    ${index + 1}
-                </div>
+            const blob =
+                await response.blob();
 
-                <div class="career-details">
-                    <h3>${career.career}</h3>
+            const url =
+                URL.createObjectURL(blob);
 
-                    <div class="match-text">
-                        ${career.match_percentage}% Match
-                    </div>
+            const link =
+                document.createElement("a");
 
-                    <div class="progress-container">
-                        <div
-                            class="progress-bar"
-                            style="width: ${career.match_percentage}%">
-                        </div>
-                    </div>
+            link.href = url;
 
-                    <p>
-                        <strong>Matched Skills:</strong>
-                        ${
-                            career.matched_skills.length
-                            ? career.matched_skills.join(", ")
-                            : "No matching skills yet"
-                        }
-                    </p>
-                </div>
-            `;
+            link.download =
+                `interview_report_${userId}.pdf`;
 
-            container.appendChild(card);
-        });
+            document.body.appendChild(link);
 
-    } catch (error) {
+            link.click();
 
-        console.error(error);
+            link.remove();
 
-        document.getElementById(
-            "careerRecommendations"
-        ).innerHTML =
-            "<p>Unable to load career recommendations.</p>";
-    }
-}
-async function loadCareerReadiness(userId) {
-    try {
-        const response = await fetch(
-            "http://127.0.0.1:8000/career-readiness/" + userId
-        );
+            URL.revokeObjectURL(url);
 
-        const data = await response.json();
+        } catch (error) {
 
-        if (!response.ok) {
-            throw new Error(data.detail || "Could not load career readiness");
-        }
+            console.error(
+                "PDF error:",
+                error
+            );
 
-        console.log("Career Readiness:", data);
-
-        // Score
-        document.getElementById("readinessScore").innerText =
-            data.career_readiness_score + "%";
-
-        // Level
-        document.getElementById("readinessLevel").innerText =
-            data.level;
-const progress =
-    document.getElementById("readinessProgress");
-
-progress.style.width =
-    data.career_readiness_score + "%";
-        // Breakdown
-        document.getElementById("skillReadiness").innerText =
-            data.breakdown.skills + "%";
-
-        document.getElementById("interviewReadiness").innerText =
-            data.breakdown.interview + "%";
-
-        document.getElementById("learningReadiness").innerText =
-            data.breakdown.learning + "%";
-
-        document.getElementById("projectReadiness").innerText =
-            data.breakdown.projects + "%";
-
-        document.getElementById("profileReadiness").innerText =
-            data.breakdown.profile + "%";
-
-    } catch (error) {
-        console.error("Career readiness error:", error);
-    }
-}
-async function loadCareerFitAnalysis(userId) {
-
-    try {
-
-        const response = await fetch(
-            "http://127.0.0.1:8000/career-readiness-analysis/" + userId
-        );
-
-        const data = await response.json();
-
-        if (!response.ok) {
-            throw new Error(
-                data.detail || "Could not load career analysis"
+            showMessage(
+                "Unable to download PDF report: " +
+                error.message
             );
         }
-
-        const container =
-            document.getElementById("careerFitContainer");
-
-        container.innerHTML = "";
-
-        const list = document.createElement("div");
-        list.className = "career-fit-list";
-
-        data.career_analysis.forEach((career, index) => {
-
-            const matchedSkills =
-                career.matched_skills || [];
-
-            const missingSkills =
-                career.missing_skills || [];
-
-            const matchedHTML =
-                matchedSkills.length > 0
-                    ? matchedSkills.map(skill =>
-                        `<span class="skill-tag">✓ ${skill}</span>`
-                    ).join("")
-                    : "<span>No matching skills yet</span>";
-
-            const missingHTML =
-                missingSkills.length > 0
-                    ? missingSkills.map(skill =>
-                        `<span class="skill-tag missing-tag">⚠ ${skill}</span>`
-                    ).join("")
-                    : "<span>Excellent! No major skill gaps.</span>";
-
-            const item = document.createElement("div");
-            item.className = "career-fit-item";
-
-            item.innerHTML = `
-                <div class="career-fit-top">
-
-                    <div>
-                        <h3>
-                            ${index === 0 ? "🏆 " : ""}
-                            ${career.career}
-                        </h3>
-
-                        <div class="career-fit-level">
-                            ${career.level}
-                        </div>
-                    </div>
-
-                    <div class="career-fit-score">
-                        ${career.readiness_score}%
-                    </div>
-
-                </div>
-
-                <div class="career-fit-progress">
-                    <div
-                        class="career-fit-progress-bar"
-                        style="width: ${career.readiness_score}%">
-                    </div>
-                </div>
-
-                <div class="career-skills">
-
-                    <div class="skill-box">
-                        <h4>✅ Matched Skills</h4>
-                        ${matchedHTML}
-                    </div>
-
-                    <div class="skill-box">
-                        <h4>⚠️ Skills to Improve</h4>
-                        ${missingHTML}
-                    </div>
-
-                </div>
-            `;
-
-            list.appendChild(item);
-        });
-
-        container.appendChild(list);
-
-    } catch (error) {
-
-        console.error(
-            "Career fit analysis error:",
-            error
-        );
-
-        document.getElementById(
-            "careerFitContainer"
-        ).innerHTML =
-            "<p>Unable to load career analysis.</p>";
     }
-}
-async function loadCareerGapActionPlan(userId) {
 
-    const container = document.getElementById("actionPlanContainer");
 
-    if (!container) return;
+    /* =========================================================
+       RESTART INTERVIEW
+    ========================================================= */
 
-    try {
+    function restartInterview() {
 
-        const response = await fetch(
-            `http://127.0.0.1:8000/career-gap-action-plan/${userId}`
-        );
+        stopAnswer();
 
-        if (!response.ok) {
-            throw new Error("Failed to load career action plan");
+        stopCamera();
+
+        currentQuestionIndex = 0;
+
+        scores = [];
+
+        allStrengths = [];
+
+        allImprovements = [];
+
+        faceWarnings = 0;
+
+        interviewCompleted = false;
+
+        answerSubmitted = false;
+
+        updateWarningDisplay();
+
+        document.getElementById("finalResult")
+            .classList.remove("show");
+
+        document.getElementById("evaluationCard")
+            .classList.remove("show");
+
+        loadInterview();
+    }
+
+
+    /* =========================================================
+       RESTORE USER ID
+    ========================================================= */
+
+    const savedUserId =
+        localStorage.getItem("user_id");
+
+    if (savedUserId) {
+
+        userId =
+            parseInt(savedUserId);
+
+        document.getElementById("userIdInput")
+            .value = userId;
+    }
+
+
+    /* =========================================================
+       INITIAL LOAD
+    ========================================================= */
+
+    window.addEventListener(
+        "load",
+        function() {
+
+            if (userId) {
+                loadInterview();
+            }
+
         }
+    );
 
-        const data = await response.json();
-
-        const gap = data.career_gap;
-        const interview = data.interview_analysis;
-
-        container.innerHTML = `
-
-            <div class="action-career">
-                🎯 ${data.selected_career}
-            </div>
-
-            <div class="action-plan-grid">
-
-                <!-- Skill Score -->
-                <div class="action-box">
-
-                    <h3>📊 Skill Readiness</h3>
-
-                    <div class="action-score">
-                        ${gap.skill_score}%
-                    </div>
-
-                    <div class="action-progress">
-                        <div
-                            class="action-progress-bar"
-                            style="width:${gap.skill_score}%"
-                        ></div>
-                    </div>
-
-                </div>
-
-
-                <!-- Interview Score -->
-                <div class="action-box">
-
-                    <h3>🎤 Interview Readiness</h3>
-
-                    <div class="action-score">
-                        ${interview.interview_score}%
-                    </div>
-
-                    <div class="action-progress">
-                        <div
-                            class="action-progress-bar"
-                            style="width:${interview.interview_score}%"
-                        ></div>
-                    </div>
-
-                    <p>
-                        Interview Gap:
-                        <strong>${interview.interview_gap}%</strong>
-                    </p>
-
-                </div>
-
-
-                <!-- Strengths -->
-                <div class="action-box">
-
-                    <h3>💪 Your Strengths</h3>
-
-                    <div class="action-tags">
-
-                        ${
-                            gap.matched_skills.length
-                            ? gap.matched_skills.map(skill =>
-                                `<span class="action-tag">
-                                    ✓ ${skill}
-                                </span>`
-                              ).join("")
-                            : "<p>No matched skills yet.</p>"
-                        }
-
-                    </div>
-
-                </div>
-
-
-                <!-- Skill Gaps -->
-                <div class="action-box">
-
-                    <h3>⚠️ Skill Gaps</h3>
-
-                    <div class="action-tags">
-
-                        ${
-                            gap.missing_skills.length
-                            ? gap.missing_skills.map(skill =>
-                                `<span class="action-tag missing">
-                                    ${skill}
-                                </span>`
-                              ).join("")
-                            : "<p>🎉 No major skill gaps!</p>"
-                        }
-
-                    </div>
-
-                </div>
-
-
-                <!-- Priority Learning -->
-                <div class="action-box">
-
-                    <h3>📚 Learn Next</h3>
-
-                    <div class="action-tags">
-
-                        ${
-                            gap.priority_skills.length
-                            ? gap.priority_skills.map(skill =>
-                                `<span class="action-tag priority">
-                                    🔥 ${skill}
-                                </span>`
-                              ).join("")
-                            : "<p>Continue advanced learning.</p>"
-                        }
-
-                    </div>
-
-                </div>
-
-
-                <!-- Recommended Action -->
-                <div class="action-box">
-
-                    <h3>💡 Recommended Action</h3>
-
-                    <p class="action-message">
-                        ${gap.recommended_action}
-                    </p>
-
-                    <hr>
-
-                    <p class="action-message">
-                        🎤 ${interview.recommended_action}
-                    </p>
-
-                </div>
-
-
-                <!-- Project -->
-                <div class="action-box">
-
-                    <h3>🛠️ Recommended Project</h3>
-
-                    <p class="action-project">
-                        ${gap.recommended_project}
-                    </p>
-
-                </div>
-
-
-                <!-- Expected Improvement -->
-                <div class="action-box">
-
-                    <h3>📈 Expected Improvement</h3>
-
-                    <div class="expected-improvement">
-                        ${gap.expected_improvement}%
-                    </div>
-
-                    <p>
-                        Expected skill readiness after focusing
-                        on your priority skills.
-                    </p>
-
-                </div>
-
-            </div>
-        `;
-
-    } catch (error) {
-
-        console.error(
-            "Career action plan error:",
-            error
-        );
-
-        container.innerHTML = `
-            <p>
-                ⚠️ Unable to load career action plan.
-            </p>
-        `;
-    }
-}
-    </script>
+</script>
 
 </body>
-
 </html>
